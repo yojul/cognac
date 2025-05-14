@@ -30,7 +30,7 @@ docs = ["sphinx",
 ]
 
 [tool.setuptools.packages]
-find = { where = ["cognac"] }
+find = { where = ["."], exclude = ["docs*","test*"] }
 
 [project.urls]
 Homepage = "https://github.com/yojul/cognac#"
