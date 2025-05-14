@@ -29,8 +29,8 @@ docs = ["sphinx",
         "sphinx_rtd_theme",
 ]
 
-[tool.setuptools]
-packages = ["cognac"]
+[tool.setuptools.packages]
+find = { where = ["cognac"] }
 
 [project.urls]
 Homepage = "https://github.com/yojul/cognac#"
