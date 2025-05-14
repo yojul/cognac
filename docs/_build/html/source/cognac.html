@@ -1,0 +1,459 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cognac package &mdash; COGNAC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            COGNAC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">cognac package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cognac.centralized_dql">cognac.centralized_dql module</a><ul>
+<li><a class="reference internal" href="#cognac.centralized_dql.CentralizedDQNAgent"><code class="docutils literal notranslate"><span class="pre">CentralizedDQNAgent</span></code></a><ul>
+<li><a class="reference internal" href="#cognac.centralized_dql.CentralizedDQNAgent.select_action"><code class="docutils literal notranslate"><span class="pre">CentralizedDQNAgent.select_action()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.centralized_dql.CentralizedDQNAgent.store_experience"><code class="docutils literal notranslate"><span class="pre">CentralizedDQNAgent.store_experience()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.centralized_dql.CentralizedDQNAgent.train"><code class="docutils literal notranslate"><span class="pre">CentralizedDQNAgent.train()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cognac.centralized_dql.DeepQNetwork"><code class="docutils literal notranslate"><span class="pre">DeepQNetwork</span></code></a><ul>
+<li><a class="reference internal" href="#cognac.centralized_dql.DeepQNetwork.forward"><code class="docutils literal notranslate"><span class="pre">DeepQNetwork.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-cognac.centralized_qlearning">cognac.centralized_qlearning module</a><ul>
+<li><a class="reference internal" href="#cognac.centralized_qlearning.CentralizedQLearningAgent"><code class="docutils literal notranslate"><span class="pre">CentralizedQLearningAgent</span></code></a><ul>
+<li><a class="reference internal" href="#cognac.centralized_qlearning.CentralizedQLearningAgent.get_action_index"><code class="docutils literal notranslate"><span class="pre">CentralizedQLearningAgent.get_action_index()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.centralized_qlearning.CentralizedQLearningAgent.get_state_index"><code class="docutils literal notranslate"><span class="pre">CentralizedQLearningAgent.get_state_index()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.centralized_qlearning.CentralizedQLearningAgent.select_action"><code class="docutils literal notranslate"><span class="pre">CentralizedQLearningAgent.select_action()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.centralized_qlearning.CentralizedQLearningAgent.update_q_table"><code class="docutils literal notranslate"><span class="pre">CentralizedQLearningAgent.update_q_table()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-cognac.decentralized_reinforce">cognac.decentralized_reinforce module</a><ul>
+<li><a class="reference internal" href="#cognac.decentralized_reinforce.PolicyNetwork"><code class="docutils literal notranslate"><span class="pre">PolicyNetwork</span></code></a><ul>
+<li><a class="reference internal" href="#cognac.decentralized_reinforce.PolicyNetwork.forward"><code class="docutils literal notranslate"><span class="pre">PolicyNetwork.forward()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cognac.decentralized_reinforce.REINFORCEAgent"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent</span></code></a><ul>
+<li><a class="reference internal" href="#cognac.decentralized_reinforce.REINFORCEAgent.select_action"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent.select_action()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.decentralized_reinforce.REINFORCEAgent.store_transition"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent.store_transition()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.decentralized_reinforce.REINFORCEAgent.update_policy"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent.update_policy()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cognac.decentralized_reinforce.decentralized_reinforce"><code class="docutils literal notranslate"><span class="pre">decentralized_reinforce()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-cognac.idql">cognac.idql module</a><ul>
+<li><a class="reference internal" href="#cognac.idql.IndependentQLearningAgents"><code class="docutils literal notranslate"><span class="pre">IndependentQLearningAgents</span></code></a><ul>
+<li><a class="reference internal" href="#cognac.idql.IndependentQLearningAgents.select_action"><code class="docutils literal notranslate"><span class="pre">IndependentQLearningAgents.select_action()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.idql.IndependentQLearningAgents.test"><code class="docutils literal notranslate"><span class="pre">IndependentQLearningAgents.test()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.idql.IndependentQLearningAgents.test_all"><code class="docutils literal notranslate"><span class="pre">IndependentQLearningAgents.test_all()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.idql.IndependentQLearningAgents.train"><code class="docutils literal notranslate"><span class="pre">IndependentQLearningAgents.train()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.idql.IndependentQLearningAgents.update_q_table"><code class="docutils literal notranslate"><span class="pre">IndependentQLearningAgents.update_q_table()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cognac.idql.encode_state"><code class="docutils literal notranslate"><span class="pre">encode_state()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-cognac.reinforce">cognac.reinforce module</a><ul>
+<li><a class="reference internal" href="#cognac.reinforce.PolicyNetwork"><code class="docutils literal notranslate"><span class="pre">PolicyNetwork</span></code></a><ul>
+<li><a class="reference internal" href="#cognac.reinforce.PolicyNetwork.forward"><code class="docutils literal notranslate"><span class="pre">PolicyNetwork.forward()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cognac.reinforce.REINFORCEAgent"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent</span></code></a><ul>
+<li><a class="reference internal" href="#cognac.reinforce.REINFORCEAgent.select_action"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent.select_action()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.reinforce.REINFORCEAgent.store_transition"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent.store_transition()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.reinforce.REINFORCEAgent.update_policy"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent.update_policy()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-cognac">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">COGNAC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">cognac package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/cognac.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cognac-package">
+<h1>cognac package<a class="headerlink" href="#cognac-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cognac.core.html">cognac.core package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cognac.core.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognac.core.html#module-cognac.core.BaseEnv">cognac.core.BaseEnv module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cognac.core.html#cognac.core.BaseEnv.BaseNetworkedEnv"><code class="docutils literal notranslate"><span class="pre">BaseNetworkedEnv</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cognac.core.html#module-cognac.core.BaseReward">cognac.core.BaseReward module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cognac.core.html#cognac.core.BaseReward.BaseReward"><code class="docutils literal notranslate"><span class="pre">BaseReward</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cognac.core.html#cognac.core.BaseReward.BaseReward.reset"><code class="docutils literal notranslate"><span class="pre">BaseReward.reset()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cognac.core.html#module-cognac.core">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cognac.env.html">cognac.env package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cognac.env.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cognac.env.BinaryConsensus.html">cognac.env.BinaryConsensus package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.BinaryConsensus.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.BinaryConsensus.html#module-cognac.env.BinaryConsensus.env">cognac.env.BinaryConsensus.env module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.BinaryConsensus.html#module-cognac.env.BinaryConsensus.rewards">cognac.env.BinaryConsensus.rewards module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.BinaryConsensus.html#module-cognac.env.BinaryConsensus">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cognac.env.FirefightingGraph.html">cognac.env.FirefightingGraph package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.FirefightingGraph.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.FirefightingGraph.html#module-cognac.env.FirefightingGraph.env">cognac.env.FirefightingGraph.env module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.FirefightingGraph.html#module-cognac.env.FirefightingGraph.rewards">cognac.env.FirefightingGraph.rewards module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.FirefightingGraph.html#module-cognac.env.FirefightingGraph">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cognac.env.SysAdmin.html">cognac.env.SysAdmin package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.SysAdmin.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.SysAdmin.html#module-cognac.env.SysAdmin.env">cognac.env.SysAdmin.env module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.SysAdmin.html#module-cognac.env.SysAdmin.rewards">cognac.env.SysAdmin.rewards module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.SysAdmin.html#module-cognac.env.SysAdmin">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cognac.env.html#module-cognac.env">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cognac.utils.html">cognac.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cognac.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognac.utils.html#module-cognac.utils.graph_utils">cognac.utils.graph_utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cognac.utils.html#cognac.utils.graph_utils.generate_coordination_graph"><code class="docutils literal notranslate"><span class="pre">generate_coordination_graph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cognac.utils.html#cognac.utils.graph_utils.generate_dag_influence_matrix"><code class="docutils literal notranslate"><span class="pre">generate_dag_influence_matrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cognac.utils.html#cognac.utils.graph_utils.generate_deterministic_matrix"><code class="docutils literal notranslate"><span class="pre">generate_deterministic_matrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cognac.utils.html#cognac.utils.graph_utils.generate_influence_matrix"><code class="docutils literal notranslate"><span class="pre">generate_influence_matrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cognac.utils.html#cognac.utils.graph_utils.plot_influence_graph"><code class="docutils literal notranslate"><span class="pre">plot_influence_graph()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cognac.utils.html#module-cognac.utils.visualization">cognac.utils.visualization module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cognac.utils.html#cognac.utils.visualization.GifRenderingWrapper"><code class="docutils literal notranslate"><span class="pre">GifRenderingWrapper</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cognac.utils.html#cognac.utils.visualization.GifRenderingWrapper.capture_frame"><code class="docutils literal notranslate"><span class="pre">GifRenderingWrapper.capture_frame()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.utils.html#cognac.utils.visualization.GifRenderingWrapper.generate_gif"><code class="docutils literal notranslate"><span class="pre">GifRenderingWrapper.generate_gif()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.utils.html#cognac.utils.visualization.GifRenderingWrapper.reset"><code class="docutils literal notranslate"><span class="pre">GifRenderingWrapper.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.utils.html#cognac.utils.visualization.GifRenderingWrapper.step"><code class="docutils literal notranslate"><span class="pre">GifRenderingWrapper.step()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cognac.utils.html#module-cognac.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-cognac.centralized_dql">
+<span id="cognac-centralized-dql-module"></span><h2>cognac.centralized_dql module<a class="headerlink" href="#module-cognac.centralized_dql" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="cognac.centralized_dql.CentralizedDQNAgent">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cognac.centralized_dql.</span></span><span class="sig-name descname"><span class="pre">CentralizedDQNAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_agents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon_decay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.995</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.centralized_dql.CentralizedDQNAgent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.centralized_dql.CentralizedDQNAgent.select_action">
+<span class="sig-name descname"><span class="pre">select_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.centralized_dql.CentralizedDQNAgent.select_action" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.centralized_dql.CentralizedDQNAgent.store_experience">
+<span class="sig-name descname"><span class="pre">store_experience</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.centralized_dql.CentralizedDQNAgent.store_experience" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.centralized_dql.CentralizedDQNAgent.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cognac.centralized_dql.CentralizedDQNAgent.train" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cognac.centralized_dql.DeepQNetwork">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cognac.centralized_dql.</span></span><span class="sig-name descname"><span class="pre">DeepQNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.centralized_dql.DeepQNetwork" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.centralized_dql.DeepQNetwork.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.centralized_dql.DeepQNetwork.forward" title="Link to this definition"></a></dt>
+<dd><p>Define the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-cognac.centralized_qlearning">
+<span id="cognac-centralized-qlearning-module"></span><h2>cognac.centralized_qlearning module<a class="headerlink" href="#module-cognac.centralized_qlearning" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="cognac.centralized_qlearning.CentralizedQLearningAgent">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cognac.centralized_qlearning.</span></span><span class="sig-name descname"><span class="pre">CentralizedQLearningAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_agents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon_decay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9995</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.centralized_qlearning.CentralizedQLearningAgent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.centralized_qlearning.CentralizedQLearningAgent.get_action_index">
+<span class="sig-name descname"><span class="pre">get_action_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.centralized_qlearning.CentralizedQLearningAgent.get_action_index" title="Link to this definition"></a></dt>
+<dd><p>Converts binary action array to an index.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.centralized_qlearning.CentralizedQLearningAgent.get_state_index">
+<span class="sig-name descname"><span class="pre">get_state_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.centralized_qlearning.CentralizedQLearningAgent.get_state_index" title="Link to this definition"></a></dt>
+<dd><p>Converts binary state array to an index.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.centralized_qlearning.CentralizedQLearningAgent.select_action">
+<span class="sig-name descname"><span class="pre">select_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.centralized_qlearning.CentralizedQLearningAgent.select_action" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.centralized_qlearning.CentralizedQLearningAgent.update_q_table">
+<span class="sig-name descname"><span class="pre">update_q_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.centralized_qlearning.CentralizedQLearningAgent.update_q_table" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-cognac.decentralized_reinforce">
+<span id="cognac-decentralized-reinforce-module"></span><h2>cognac.decentralized_reinforce module<a class="headerlink" href="#module-cognac.decentralized_reinforce" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="cognac.decentralized_reinforce.PolicyNetwork">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cognac.decentralized_reinforce.</span></span><span class="sig-name descname"><span class="pre">PolicyNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.decentralized_reinforce.PolicyNetwork" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.decentralized_reinforce.PolicyNetwork.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.decentralized_reinforce.PolicyNetwork.forward" title="Link to this definition"></a></dt>
+<dd><p>Define the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cognac.decentralized_reinforce.REINFORCEAgent">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cognac.decentralized_reinforce.</span></span><span class="sig-name descname"><span class="pre">REINFORCEAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.decentralized_reinforce.REINFORCEAgent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.decentralized_reinforce.REINFORCEAgent.select_action">
+<span class="sig-name descname"><span class="pre">select_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.decentralized_reinforce.REINFORCEAgent.select_action" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.decentralized_reinforce.REINFORCEAgent.store_transition">
+<span class="sig-name descname"><span class="pre">store_transition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_probs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.decentralized_reinforce.REINFORCEAgent.store_transition" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.decentralized_reinforce.REINFORCEAgent.update_policy">
+<span class="sig-name descname"><span class="pre">update_policy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cognac.decentralized_reinforce.REINFORCEAgent.update_policy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cognac.decentralized_reinforce.decentralized_reinforce">
+<span class="sig-prename descclassname"><span class="pre">cognac.decentralized_reinforce.</span></span><span class="sig-name descname"><span class="pre">decentralized_reinforce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ParallelEnv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">episodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.decentralized_reinforce.decentralized_reinforce" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-cognac.idql">
+<span id="cognac-idql-module"></span><h2>cognac.idql module<a class="headerlink" href="#module-cognac.idql" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="cognac.idql.IndependentQLearningAgents">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cognac.idql.</span></span><span class="sig-name descname"><span class="pre">IndependentQLearningAgents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.idql.IndependentQLearningAgents" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.idql.IndependentQLearningAgents.select_action">
+<span class="sig-name descname"><span class="pre">select_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.idql.IndependentQLearningAgents.select_action" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.idql.IndependentQLearningAgents.test">
+<span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">episodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.idql.IndependentQLearningAgents.test" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.idql.IndependentQLearningAgents.test_all">
+<span class="sig-name descname"><span class="pre">test_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_vect_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.idql.IndependentQLearningAgents.test_all" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.idql.IndependentQLearningAgents.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">episodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.idql.IndependentQLearningAgents.train" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.idql.IndependentQLearningAgents.update_q_table">
+<span class="sig-name descname"><span class="pre">update_q_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.idql.IndependentQLearningAgents.update_q_table" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cognac.idql.encode_state">
+<span class="sig-prename descclassname"><span class="pre">cognac.idql.</span></span><span class="sig-name descname"><span class="pre">encode_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.idql.encode_state" title="Link to this definition"></a></dt>
+<dd><p>Encodes a multi-discrete state (NumPy array) as a tuple for dictionary indexing.</p>
+</dd></dl>
+
+</section>
+<section id="module-cognac.reinforce">
+<span id="cognac-reinforce-module"></span><h2>cognac.reinforce module<a class="headerlink" href="#module-cognac.reinforce" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="cognac.reinforce.PolicyNetwork">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cognac.reinforce.</span></span><span class="sig-name descname"><span class="pre">PolicyNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.reinforce.PolicyNetwork" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.reinforce.PolicyNetwork.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.reinforce.PolicyNetwork.forward" title="Link to this definition"></a></dt>
+<dd><p>Define the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cognac.reinforce.REINFORCEAgent">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cognac.reinforce.</span></span><span class="sig-name descname"><span class="pre">REINFORCEAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.reinforce.REINFORCEAgent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.reinforce.REINFORCEAgent.select_action">
+<span class="sig-name descname"><span class="pre">select_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.reinforce.REINFORCEAgent.select_action" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.reinforce.REINFORCEAgent.store_transition">
+<span class="sig-name descname"><span class="pre">store_transition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_probs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.reinforce.REINFORCEAgent.store_transition" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.reinforce.REINFORCEAgent.update_policy">
+<span class="sig-name descname"><span class="pre">update_policy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cognac.reinforce.REINFORCEAgent.update_policy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-cognac">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cognac" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Jules Sintes.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
