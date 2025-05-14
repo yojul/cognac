@@ -1,0 +1,199 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cognac.utils package &mdash; COGNAC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            COGNAC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">cognac.utils package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cognac.utils.graph_utils">cognac.utils.graph_utils module</a><ul>
+<li><a class="reference internal" href="#cognac.utils.graph_utils.generate_coordination_graph"><code class="docutils literal notranslate"><span class="pre">generate_coordination_graph()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.utils.graph_utils.generate_dag_influence_matrix"><code class="docutils literal notranslate"><span class="pre">generate_dag_influence_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.utils.graph_utils.generate_deterministic_matrix"><code class="docutils literal notranslate"><span class="pre">generate_deterministic_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.utils.graph_utils.generate_influence_matrix"><code class="docutils literal notranslate"><span class="pre">generate_influence_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.utils.graph_utils.plot_influence_graph"><code class="docutils literal notranslate"><span class="pre">plot_influence_graph()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-cognac.utils.visualization">cognac.utils.visualization module</a><ul>
+<li><a class="reference internal" href="#cognac.utils.visualization.GifRenderingWrapper"><code class="docutils literal notranslate"><span class="pre">GifRenderingWrapper</span></code></a><ul>
+<li><a class="reference internal" href="#cognac.utils.visualization.GifRenderingWrapper.capture_frame"><code class="docutils literal notranslate"><span class="pre">GifRenderingWrapper.capture_frame()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.utils.visualization.GifRenderingWrapper.generate_gif"><code class="docutils literal notranslate"><span class="pre">GifRenderingWrapper.generate_gif()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.utils.visualization.GifRenderingWrapper.reset"><code class="docutils literal notranslate"><span class="pre">GifRenderingWrapper.reset()</span></code></a></li>
+<li><a class="reference internal" href="#cognac.utils.visualization.GifRenderingWrapper.step"><code class="docutils literal notranslate"><span class="pre">GifRenderingWrapper.step()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-cognac.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">COGNAC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">cognac.utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/cognac.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cognac-utils-package">
+<h1>cognac.utils package<a class="headerlink" href="#cognac-utils-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-cognac.utils.graph_utils">
+<span id="cognac-utils-graph-utils-module"></span><h2>cognac.utils.graph_utils module<a class="headerlink" href="#module-cognac.utils.graph_utils" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="cognac.utils.graph_utils.generate_coordination_graph">
+<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_coordination_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.graph_utils.generate_coordination_graph" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cognac.utils.graph_utils.generate_dag_influence_matrix">
+<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_dag_influence_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.graph_utils.generate_dag_influence_matrix" title="Link to this definition"></a></dt>
+<dd><p>Generates a random Directed Acyclic Graph (DAG) with n nodes.</p>
+<p>Parameters:
+- n (int): Number of nodes in the graph.
+- p (float): Probability of an edge existing between two nodes.</p>
+<p>Returns:
+- np.ndarray: An n x n adjacency matrix representing the DAG.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cognac.utils.graph_utils.generate_deterministic_matrix">
+<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_deterministic_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.graph_utils.generate_deterministic_matrix" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cognac.utils.graph_utils.generate_influence_matrix">
+<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_influence_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.graph_utils.generate_influence_matrix" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cognac.utils.graph_utils.plot_influence_graph">
+<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">plot_influence_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.graph_utils.plot_influence_graph" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-cognac.utils.visualization">
+<span id="cognac-utils-visualization-module"></span><h2>cognac.utils.visualization module<a class="headerlink" href="#module-cognac.utils.visualization" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="cognac.utils.visualization.GifRenderingWrapper">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cognac.utils.visualization.</span></span><span class="sig-name descname"><span class="pre">GifRenderingWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.visualization.GifRenderingWrapper" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.utils.visualization.GifRenderingWrapper.capture_frame">
+<span class="sig-name descname"><span class="pre">capture_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.visualization.GifRenderingWrapper.capture_frame" title="Link to this definition"></a></dt>
+<dd><p>Capture the current environment state as an image.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.utils.visualization.GifRenderingWrapper.generate_gif">
+<span class="sig-name descname"><span class="pre">generate_gif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'trajectory.gif'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.visualization.GifRenderingWrapper.generate_gif" title="Link to this definition"></a></dt>
+<dd><p>Save the captured frames as a GIF.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.utils.visualization.GifRenderingWrapper.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.visualization.GifRenderingWrapper.reset" title="Link to this definition"></a></dt>
+<dd><p>Reset environment and clear frames.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cognac.utils.visualization.GifRenderingWrapper.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.visualization.GifRenderingWrapper.step" title="Link to this definition"></a></dt>
+<dd><p>Perform a step and save the frame.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-cognac.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cognac.utils" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Jules Sintes.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
