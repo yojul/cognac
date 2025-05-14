@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cognac"
-version = "0.1.0"
 description = "Cooperative Graph-based Networked Agent Challenges for Multi-Agent Reinforcement Learning."
 authors = [{ name = "Jules Sintes", email = "jules.sintes@inria.fr" }]
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE.txt"]
+dynamic = ["version"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
