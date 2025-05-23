@@ -1,10 +1,7 @@
-cognac.env.BinaryConsensus package
+🤝 Binary Consensus
 ==================================
 
-Submodules
-----------
-
-cognac.env.BinaryConsensus.env module
+Environment
 -------------------------------------
 
 .. automodule:: cognac.env.BinaryConsensus.env
@@ -12,18 +9,10 @@ cognac.env.BinaryConsensus.env module
    :show-inheritance:
    :undoc-members:
 
-cognac.env.BinaryConsensus.rewards module
+Rewards
 -----------------------------------------
 
 .. automodule:: cognac.env.BinaryConsensus.rewards
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-Module contents
----------------
-
-.. automodule:: cognac.env.BinaryConsensus
    :members:
    :show-inheritance:
    :undoc-members:

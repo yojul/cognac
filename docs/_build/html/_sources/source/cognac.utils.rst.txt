@@ -1,10 +1,7 @@
-cognac.utils package
+Utilities
 ====================
 
-Submodules
-----------
-
-cognac.utils.graph\_utils module
+Graph & Network
 --------------------------------
 
 .. automodule:: cognac.utils.graph_utils
@@ -12,18 +9,10 @@ cognac.utils.graph\_utils module
    :show-inheritance:
    :undoc-members:
 
-cognac.utils.visualization module
+Rendering & Visualization
 ---------------------------------
 
 .. automodule:: cognac.utils.visualization
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-Module contents
----------------
-
-.. automodule:: cognac.utils
    :members:
    :show-inheritance:
    :undoc-members:

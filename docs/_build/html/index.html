@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>COGNAC documentation &mdash; COGNAC  documentation</title>
+  <title>🥃 COGNAC documentation &mdash; COGNAC  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -16,10 +16,11 @@
       <script src="_static/documentation_options.js?v=5929fcd5"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="cognac" href="source/modules.html" /> 
+    <link rel="next" title="Getting Started" href="quickstart.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,9 +42,16 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contenu</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="source/modules.html">cognac</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="marl.html">Experimenting with MARL</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="source/cognac.core.html">Core Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/cognac.env.html">Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/cognac.utils.html">Utilities</a></li>
 </ul>
 
         </div>
@@ -60,7 +68,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">COGNAC documentation</li>
+      <li class="breadcrumb-item active">🥃 COGNAC documentation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -71,19 +79,117 @@
            <div itemprop="articleBody">
              
   <section id="cognac-documentation">
-<h1>COGNAC documentation<a class="headerlink" href="#cognac-documentation" title="Link to this heading"></a></h1>
-<p>BONJOUR
-Add your content using <code class="docutils literal notranslate"><span class="pre">reStructuredText</span></code> syntax. See the
-<a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">reStructuredText</a>
-documentation for details.</p>
+<h1>🥃 COGNAC documentation<a class="headerlink" href="#cognac-documentation" title="Link to this heading"></a></h1>
+<p>COGNAC is a Python-based benchmark suite offering flexible, graph-structured,
+cooperative multi-agent environments for MARL research. The package offers standardized minimal
+implementations of several well-known theoretical graph-based MARL problems taken from the literature,
+adapted for empirical benchmarking with modern RL tooling.</p>
+</section>
+<section id="what-s-cognac">
+<h1>What’s COGNAC ?<a class="headerlink" href="#what-s-cognac" title="Link to this heading"></a></h1>
+<p>The package implements four different environments as self-contained Petting Zoo environments.
+Each environment is highly customizable in terms of size, interactions structure and dynamics parameters.
+In addition, it comes with several useful utility tools to generate adjacency matrix and graph-structure to instantiate
+environments as well as some rendering and visualization tools.</p>
+<p>These environments are inspired by classical pre-existing problems such as the SysAdmin network <span id="id1">[<a class="reference internal" href="#id18" title="Carlos Guestrin, Daphne Koller, and Ronald Parr. Max-norm projections for factored mdps. In IJCAI, volume 1, 673–682. 2001.">1</a>]</span>
+or Firefighting Graph <span id="id2">[<a class="reference internal" href="#id23" title="Frans A Oliehoek, Christopher Amato, and others. A concise introduction to decentralized POMDPs. Volume 1. Springer, 2016.">2</a>]</span>.
+These problems have been widely studied and used as benchmark problems to test distributed multi-agent methods.
+However, to the best of our knowledge, there are no standard implementations available, which makes algorithm comparison
+more difficult in the long run. The chosen problems implemented in COGNAC are fully described in the following subsections.
+Some of them can be instantiated with any graph structure defined by the user, and we provide a collection of standard
+graph structures for benchmarking purposes with various sizes and properties: Directed Acyclic Graph, Tree, Undirected, Dense or Sparse graph, etc.</p>
+</section>
+<section id="list-of-environments">
+<h1>List of Environments<a class="headerlink" href="#list-of-environments" title="Link to this heading"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.6%" />
+<col style="width: 14.3%" />
+<col style="width: 14.3%" />
+<col style="width: 20.4%" />
+<col style="width: 20.4%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Environment</p></th>
+<th class="head"><p>Modular Size</p></th>
+<th class="head"><p>Graph Agnostic</p></th>
+<th class="head"><p>Joint State Space</p></th>
+<th class="head"><p>Joint Act. Space</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Firefighting Graph(1D)</p></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
+<td><p><span class="math notranslate nohighlight">\(\theta^N\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2^N\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>Firefighting Graph(2D)</p></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
+<td><p><span class="math notranslate nohighlight">\(\theta^{N \times M}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(4^N\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>Binary Consensus</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p><span class="math notranslate nohighlight">\(2^N\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2^N\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>SysAdmin</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p><span class="math notranslate nohighlight">\(9^N\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2^N\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>Multi-commodity Flow</p></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
+<td><p><span class="math notranslate nohighlight">\(\rho_{\text{max}}^{k \times E}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\rho_{\text{max}}^{k \times E}\)</span></p></td>
+</tr>
+</tbody>
+</table>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contenu</span></p>
+<p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="source/modules.html">cognac</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="source/cognac.html">cognac package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="marl.html">Experimenting with MARL</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Technical Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="source/cognac.core.html">Core Object</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="source/cognac.core.html#module-cognac.core.BaseEnv">BaseEnv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/cognac.core.html#module-cognac.core.BaseReward">BaseReward</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="source/cognac.env.html">Environments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="source/cognac.env.BinaryConsensus.html">Binary Consensus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/cognac.env.FirefightingGraph.html">Firefighting Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/cognac.env.SysAdmin.html">SysAdmin Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/cognac.env.html#module-cognac.env">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="source/cognac.utils.html">Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="source/cognac.utils.html#module-cognac.utils.graph_utils">Graph &amp; Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="source/cognac.utils.html#module-cognac.utils.visualization">Rendering &amp; Visualization</a></li>
 </ul>
 </li>
 </ul>
+</div>
+<div class="docutils container" id="id3">
+<div role="list" class="citation-list">
+<div class="citation" id="id18" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Carlos Guestrin, Daphne Koller, and Ronald Parr. Max-norm projections for factored mdps. In <em>IJCAI</em>, volume 1, 673–682. 2001.</p>
+</div>
+<div class="citation" id="id23" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Frans A Oliehoek, Christopher Amato, and others. <em>A concise introduction to decentralized POMDPs</em>. Volume 1. Springer, 2016.</p>
+</div>
+</div>
 </div>
 </section>
 
@@ -91,7 +197,7 @@ documentation for details.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="source/modules.html" class="btn btn-neutral float-right" title="cognac" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="quickstart.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

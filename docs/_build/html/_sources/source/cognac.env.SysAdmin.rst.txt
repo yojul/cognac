@@ -1,10 +1,8 @@
-cognac.env.SysAdmin package
+💻 SysAdmin Network
 ===========================
 
-Submodules
-----------
 
-cognac.env.SysAdmin.env module
+Environment
 ------------------------------
 
 .. automodule:: cognac.env.SysAdmin.env
@@ -12,18 +10,10 @@ cognac.env.SysAdmin.env module
    :show-inheritance:
    :undoc-members:
 
-cognac.env.SysAdmin.rewards module
+Rewards
 ----------------------------------
 
 .. automodule:: cognac.env.SysAdmin.rewards
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-Module contents
----------------
-
-.. automodule:: cognac.env.SysAdmin
    :members:
    :show-inheritance:
    :undoc-members:

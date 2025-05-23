@@ -61,9 +61,10 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         # Probability of influencing action in [0,1]
         self.adjacency_matrix_prob = self.adjacency_matrix
         self._check_adjacency_matrix()
-
         # Add self influence w/ base fail rate paramater
         np.fill_diagonal(self.adjacency_matrix_prob, self.base_fail_rate)
+        self._scale_adjacency_matrix()
+
         self.neighboring_masks = np.identity(self.n_agents, dtype=bool)
         self.adjacency_matrix_prob = (
             to_stochastic_matrix(self.adjacency_matrix_prob) - 1e-4
@@ -84,6 +85,25 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         # Check that influence probability are well defined
         assert np.all(self.adjacency_matrix_prob <= 1) and np.all(
             self.adjacency_matrix_prob >= 0
+        )
+
+    def _scale_adjacency_matrix(self):
+        row_sums = self.adjacency_matrix_prob.sum(axis=1)
+        max_row_sum = np.max(row_sums)
+
+        if max_row_sum > 1.0:
+            self.adjacency_matrix_prob = (
+                self.adjacency_matrix_prob / max_row_sum
+            )  # scale everything so max row sum is 1.0
+        col_sums = self.adjacency_matrix_prob.sum(axis=0)
+        max_col_sum = np.max(col_sums)
+        if max_col_sum > 1.0:
+            self.adjacency_matrix_prob = (
+                self.adjacency_matrix_prob / max_col_sum
+            )  # scale everything so max row sum is 1.0
+        print(
+            np.max(self.adjacency_matrix_prob.sum(axis=1)),
+            np.max(self.adjacency_matrix_prob.sum(axis=0)),
         )
 
     def reset(self, seed=None, options=None):
@@ -158,7 +178,11 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         # STEP 4 : Randomly make machines faulty or dead with networked influence
         faulty_processes = np.random.binomial(
             1,
-            np.sum(self.adjacency_matrix_prob[self._working_mask()], axis=1),
+            np.clip(
+                np.sum(self.adjacency_matrix_prob[self._working_mask()], axis=1),
+                min=0.0,
+                max=1.0,
+            ),
             size=self.adjacency_matrix_prob[self._working_mask()].shape[0],
         )
         self.state[self._working_mask(), 0] = faulty_processes

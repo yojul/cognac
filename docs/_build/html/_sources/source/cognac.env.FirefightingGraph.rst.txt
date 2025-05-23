@@ -1,10 +1,7 @@
-cognac.env.FirefightingGraph package
+🔥 Firefighting Graph
 ====================================
 
-Submodules
-----------
-
-cognac.env.FirefightingGraph.env module
+Environment
 ---------------------------------------
 
 .. automodule:: cognac.env.FirefightingGraph.env
@@ -12,7 +9,7 @@ cognac.env.FirefightingGraph.env module
    :show-inheritance:
    :undoc-members:
 
-cognac.env.FirefightingGraph.rewards module
+Rewards
 -------------------------------------------
 
 .. automodule:: cognac.env.FirefightingGraph.rewards
@@ -20,10 +17,3 @@ cognac.env.FirefightingGraph.rewards module
    :show-inheritance:
    :undoc-members:
 
-Module contents
----------------
-
-.. automodule:: cognac.env.FirefightingGraph
-   :members:
-   :show-inheritance:
-   :undoc-members:

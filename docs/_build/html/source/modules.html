@@ -40,11 +40,18 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">cognac</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../marl.html">Experimenting with MARL</a></li>
 </ul>
-</div>
+<p class="caption" role="heading"><span class="caption-text">Technical Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cognac.core.html">Core Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cognac.env.html">Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cognac.utils.html">Utilities</a></li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -75,90 +82,31 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="cognac.html">cognac package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="cognac.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="cognac.core.html">cognac.core package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cognac.core.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.core.html#module-cognac.core.BaseEnv">cognac.core.BaseEnv module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.core.html#module-cognac.core.BaseReward">cognac.core.BaseReward module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.core.html#module-cognac.core">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cognac.core.html">Core Object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cognac.core.html#module-cognac.core.BaseEnv">BaseEnv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.core.html#module-cognac.core.BaseReward">BaseReward</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="cognac.env.html">cognac.env package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cognac.env.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cognac.env.html">Environments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.BinaryConsensus.html">🤝 Binary Consensus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.FirefightingGraph.html">🔥 Firefighting Graph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.env.SysAdmin.html">💻 SysAdmin Network</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cognac.env.html#module-cognac.env">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="cognac.utils.html">cognac.utils package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cognac.utils.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.utils.html#module-cognac.utils.graph_utils">cognac.utils.graph_utils module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.utils.html#module-cognac.utils.visualization">cognac.utils.visualization module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.utils.html#module-cognac.utils">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cognac.utils.html">Utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cognac.utils.html#module-cognac.utils.graph_utils">Graph &amp; Network</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cognac.utils.html#module-cognac.utils.visualization">Rendering &amp; Visualization</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="cognac.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cognac.html#module-cognac.centralized_dql">cognac.centralized_dql module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="cognac.html#cognac.centralized_dql.CentralizedDQNAgent"><code class="docutils literal notranslate"><span class="pre">CentralizedDQNAgent</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.centralized_dql.CentralizedDQNAgent.select_action"><code class="docutils literal notranslate"><span class="pre">CentralizedDQNAgent.select_action()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.centralized_dql.CentralizedDQNAgent.store_experience"><code class="docutils literal notranslate"><span class="pre">CentralizedDQNAgent.store_experience()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.centralized_dql.CentralizedDQNAgent.train"><code class="docutils literal notranslate"><span class="pre">CentralizedDQNAgent.train()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="cognac.html#cognac.centralized_dql.DeepQNetwork"><code class="docutils literal notranslate"><span class="pre">DeepQNetwork</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.centralized_dql.DeepQNetwork.forward"><code class="docutils literal notranslate"><span class="pre">DeepQNetwork.forward()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="cognac.html#module-cognac.centralized_qlearning">cognac.centralized_qlearning module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="cognac.html#cognac.centralized_qlearning.CentralizedQLearningAgent"><code class="docutils literal notranslate"><span class="pre">CentralizedQLearningAgent</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.centralized_qlearning.CentralizedQLearningAgent.get_action_index"><code class="docutils literal notranslate"><span class="pre">CentralizedQLearningAgent.get_action_index()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.centralized_qlearning.CentralizedQLearningAgent.get_state_index"><code class="docutils literal notranslate"><span class="pre">CentralizedQLearningAgent.get_state_index()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.centralized_qlearning.CentralizedQLearningAgent.select_action"><code class="docutils literal notranslate"><span class="pre">CentralizedQLearningAgent.select_action()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.centralized_qlearning.CentralizedQLearningAgent.update_q_table"><code class="docutils literal notranslate"><span class="pre">CentralizedQLearningAgent.update_q_table()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="cognac.html#module-cognac.decentralized_reinforce">cognac.decentralized_reinforce module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="cognac.html#cognac.decentralized_reinforce.PolicyNetwork"><code class="docutils literal notranslate"><span class="pre">PolicyNetwork</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.decentralized_reinforce.PolicyNetwork.forward"><code class="docutils literal notranslate"><span class="pre">PolicyNetwork.forward()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="cognac.html#cognac.decentralized_reinforce.REINFORCEAgent"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.decentralized_reinforce.REINFORCEAgent.select_action"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent.select_action()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.decentralized_reinforce.REINFORCEAgent.store_transition"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent.store_transition()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.decentralized_reinforce.REINFORCEAgent.update_policy"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent.update_policy()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="cognac.html#cognac.decentralized_reinforce.decentralized_reinforce"><code class="docutils literal notranslate"><span class="pre">decentralized_reinforce()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="cognac.html#module-cognac.idql">cognac.idql module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="cognac.html#cognac.idql.IndependentQLearningAgents"><code class="docutils literal notranslate"><span class="pre">IndependentQLearningAgents</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.idql.IndependentQLearningAgents.select_action"><code class="docutils literal notranslate"><span class="pre">IndependentQLearningAgents.select_action()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.idql.IndependentQLearningAgents.test"><code class="docutils literal notranslate"><span class="pre">IndependentQLearningAgents.test()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.idql.IndependentQLearningAgents.test_all"><code class="docutils literal notranslate"><span class="pre">IndependentQLearningAgents.test_all()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.idql.IndependentQLearningAgents.train"><code class="docutils literal notranslate"><span class="pre">IndependentQLearningAgents.train()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.idql.IndependentQLearningAgents.update_q_table"><code class="docutils literal notranslate"><span class="pre">IndependentQLearningAgents.update_q_table()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="cognac.html#cognac.idql.encode_state"><code class="docutils literal notranslate"><span class="pre">encode_state()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="cognac.html#module-cognac.reinforce">cognac.reinforce module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="cognac.html#cognac.reinforce.PolicyNetwork"><code class="docutils literal notranslate"><span class="pre">PolicyNetwork</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.reinforce.PolicyNetwork.forward"><code class="docutils literal notranslate"><span class="pre">PolicyNetwork.forward()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="cognac.html#cognac.reinforce.REINFORCEAgent"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.reinforce.REINFORCEAgent.select_action"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent.select_action()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.reinforce.REINFORCEAgent.store_transition"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent.store_transition()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="cognac.html#cognac.reinforce.REINFORCEAgent.update_policy"><code class="docutils literal notranslate"><span class="pre">REINFORCEAgent.update_policy()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="cognac.html#cognac-centralized-dql-module">cognac.centralized_dql module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognac.html#cognac-centralized-qlearning-module">cognac.centralized_qlearning module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognac.html#cognac-decentralized-reinforce-module">cognac.decentralized_reinforce module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognac.html#cognac-idql-module">cognac.idql module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cognac.html#cognac-reinforce-module">cognac.reinforce module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cognac.html#module-cognac">Module contents</a></li>
 </ul>
 </li>
