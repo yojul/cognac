@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cognac.core package &mdash; COGNAC  documentation</title>
+  <title>Core Object &mdash; COGNAC  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -18,7 +18,9 @@
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Environments" href="cognac.env.html" />
+    <link rel="prev" title="Experimenting with MARL" href="../marl.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,26 +42,31 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">cognac.core package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-cognac.core.BaseEnv">cognac.core.BaseEnv module</a><ul>
-<li><a class="reference internal" href="#cognac.core.BaseEnv.BaseNetworkedEnv"><code class="docutils literal notranslate"><span class="pre">BaseNetworkedEnv</span></code></a></li>
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../marl.html">Experimenting with MARL</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Core Object</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-cognac.core.BaseEnv">BaseEnv</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cognac.core.BaseEnv.BaseNetworkedEnv"><code class="docutils literal notranslate"><span class="pre">BaseNetworkedEnv</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-cognac.core.BaseReward">cognac.core.BaseReward module</a><ul>
-<li><a class="reference internal" href="#cognac.core.BaseReward.BaseReward"><code class="docutils literal notranslate"><span class="pre">BaseReward</span></code></a><ul>
-<li><a class="reference internal" href="#cognac.core.BaseReward.BaseReward.reset"><code class="docutils literal notranslate"><span class="pre">BaseReward.reset()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cognac.core.BaseReward">BaseReward</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cognac.core.BaseReward.BaseReward"><code class="docutils literal notranslate"><span class="pre">BaseReward</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#cognac.core.BaseReward.BaseReward.reset"><code class="docutils literal notranslate"><span class="pre">BaseReward.reset()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-cognac.core">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="cognac.env.html">Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cognac.utils.html">Utilities</a></li>
 </ul>
-</div>
+
         </div>
       </div>
     </nav>
@@ -74,7 +81,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">cognac.core package</li>
+      <li class="breadcrumb-item active">Core Object</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/source/cognac.core.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -84,13 +91,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="cognac-core-package">
-<h1>cognac.core package<a class="headerlink" href="#cognac-core-package" title="Link to this heading"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
-</section>
+  <section id="core-object">
+<h1>Core Object<a class="headerlink" href="#core-object" title="Link to this heading"></a></h1>
 <section id="module-cognac.core.BaseEnv">
-<span id="cognac-core-baseenv-module"></span><h2>cognac.core.BaseEnv module<a class="headerlink" href="#module-cognac.core.BaseEnv" title="Link to this heading"></a></h2>
+<span id="baseenv"></span><h2>BaseEnv<a class="headerlink" href="#module-cognac.core.BaseEnv" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="cognac.core.BaseEnv.BaseNetworkedEnv">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cognac.core.BaseEnv.</span></span><span class="sig-name descname"><span class="pre">BaseNetworkedEnv</span></span><a class="headerlink" href="#cognac.core.BaseEnv.BaseNetworkedEnv" title="Link to this definition"></a></dt>
@@ -99,7 +103,7 @@
 
 </section>
 <section id="module-cognac.core.BaseReward">
-<span id="cognac-core-basereward-module"></span><h2>cognac.core.BaseReward module<a class="headerlink" href="#module-cognac.core.BaseReward" title="Link to this heading"></a></h2>
+<span id="basereward"></span><h2>BaseReward<a class="headerlink" href="#module-cognac.core.BaseReward" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="cognac.core.BaseReward.BaseReward">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cognac.core.BaseReward.</span></span><span class="sig-name descname"><span class="pre">BaseReward</span></span><a class="headerlink" href="#cognac.core.BaseReward.BaseReward" title="Link to this definition"></a></dt>
@@ -112,15 +116,15 @@
 </dd></dl>
 
 </section>
-<section id="module-cognac.core">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cognac.core" title="Link to this heading"></a></h2>
-</section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../marl.html" class="btn btn-neutral float-left" title="Experimenting with MARL" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cognac.env.html" class="btn btn-neutral float-right" title="Environments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

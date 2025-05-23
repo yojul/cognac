@@ -1,8 +1,5 @@
-cognac.env package
+Environments
 ==================
-
-Subpackages
------------
 
 .. toctree::
    :maxdepth: 4

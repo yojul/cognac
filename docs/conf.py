@@ -24,10 +24,7 @@ author = "Jules Sintes"
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx_rtd_theme",
-]
+extensions = ["sphinx.ext.autodoc", "sphinx_rtd_theme", "sphinxcontrib.bibtex"]
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
@@ -36,6 +33,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "sphinx_rtd_theme"  #'alabaster'
+html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
 highlight_language = "python3"
+
+bibtex_bibfiles = ["refs.bib"]

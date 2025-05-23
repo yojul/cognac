@@ -1,10 +1,7 @@
-cognac.core package
-===================
+Core Object
+=============
 
-Submodules
-----------
-
-cognac.core.BaseEnv module
+BaseEnv
 --------------------------
 
 .. automodule:: cognac.core.BaseEnv
@@ -12,18 +9,10 @@ cognac.core.BaseEnv module
    :show-inheritance:
    :undoc-members:
 
-cognac.core.BaseReward module
+BaseReward
 -----------------------------
 
 .. automodule:: cognac.core.BaseReward
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-Module contents
----------------
-
-.. automodule:: cognac.core
    :members:
    :show-inheritance:
    :undoc-members:
