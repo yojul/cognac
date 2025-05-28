@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🥃 COGNAC documentation &mdash; COGNAC  documentation</title>
+  <title>🥃 Welcome to COGNAC’s Documentation &mdash; COGNAC  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -68,7 +68,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">🥃 COGNAC documentation</li>
+      <li class="breadcrumb-item active">🥃 Welcome to COGNAC’s Documentation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -78,26 +78,58 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="cognac-documentation">
-<h1>🥃 COGNAC documentation<a class="headerlink" href="#cognac-documentation" title="Link to this heading"></a></h1>
-<p>COGNAC is a Python-based benchmark suite offering flexible, graph-structured,
-cooperative multi-agent environments for MARL research. The package offers standardized minimal
-implementations of several well-known theoretical graph-based MARL problems taken from the literature,
-adapted for empirical benchmarking with modern RL tooling.</p>
+  <section id="welcome-to-cognac-s-documentation">
+<h1>🥃 Welcome to COGNAC’s Documentation<a class="headerlink" href="#welcome-to-cognac-s-documentation" title="Link to this heading"></a></h1>
+<p><strong>COGNAC</strong> (COoperative Graph-based Networked Agent Challenges) is a benchmark suite for evaluating and developing decentralized multi-agent reinforcement learning (MARL) algorithms on cooperative tasks with <strong>graph-structured environments</strong>.</p>
+<p>Real-world systems such as power grids, traffic networks, and computer systems often exhibit complex interdependencies that can naturally be modeled as graphs. Yet, controlling such systems remains challenging due to their scale, partial observability, and combinatorial complexity. Standard single-agent RL struggles to scale in these settings.</p>
+<p>COGNAC bridges the gap between theoretical models of network control and empirical reinforcement learning by providing:</p>
+<ul class="simple">
+<li><p>A flexible and modular suite of environments with <strong>network topology</strong></p></li>
+<li><p>Support for <strong>fully cooperative MARL tasks</strong> on arbitrary graph structures</p></li>
+<li><p>Scalable problems designed to highlight the limitations of centralized control</p></li>
+<li><p>Tools for testing <strong>decentralized, distributed, and frugal AI methods</strong></p></li>
+</ul>
+<section id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading"></a></h2>
+<p>Despite recent advances in MARL, there is a lack of standardized, open-source benchmarks specifically focused on graph-structured control problems. Many existing environments either rely on centralized settings or do not fully exploit the graph structure of the domain.</p>
+<p>COGNAC was built to fill this gap by offering:
+- Minimal yet challenging environments tailored for graph-based cooperation
+- Compatibility with modern RL libraries and tooling
+- A platform to test scalability, generalization, and communication protocols</p>
 </section>
-<section id="what-s-cognac">
-<h1>What’s COGNAC ?<a class="headerlink" href="#what-s-cognac" title="Link to this heading"></a></h1>
+<section id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
 <p>The package implements four different environments as self-contained Petting Zoo environments.
 Each environment is highly customizable in terms of size, interactions structure and dynamics parameters.
 In addition, it comes with several useful utility tools to generate adjacency matrix and graph-structure to instantiate
 environments as well as some rendering and visualization tools.</p>
-<p>These environments are inspired by classical pre-existing problems such as the SysAdmin network <span id="id1">[<a class="reference internal" href="#id18" title="Carlos Guestrin, Daphne Koller, and Ronald Parr. Max-norm projections for factored mdps. In IJCAI, volume 1, 673–682. 2001.">1</a>]</span>
-or Firefighting Graph <span id="id2">[<a class="reference internal" href="#id23" title="Frans A Oliehoek, Christopher Amato, and others. A concise introduction to decentralized POMDPs. Volume 1. Springer, 2016.">2</a>]</span>.
-These problems have been widely studied and used as benchmark problems to test distributed multi-agent methods.
-However, to the best of our knowledge, there are no standard implementations available, which makes algorithm comparison
-more difficult in the long run. The chosen problems implemented in COGNAC are fully described in the following subsections.
-Some of them can be instantiated with any graph structure defined by the user, and we provide a collection of standard
-graph structures for benchmarking purposes with various sizes and properties: Directed Acyclic Graph, Tree, Undirected, Dense or Sparse graph, etc.</p>
+<ul class="simple">
+<li><p><strong>Graph-native API</strong>: define any graph topology for your cooperative problem</p></li>
+<li><p><strong>Simple, extensible environments</strong>: start small, scale big</p></li>
+<li><p><strong>Baseline integrations</strong>: compatible with standard MARL algorithms</p></li>
+<li><p><strong>Realistic use-cases</strong>: inspired by domains like traffic, power systems, and logistics</p></li>
+</ul>
+</section>
+<section id="contributions">
+<h2>Contributions<a class="headerlink" href="#contributions" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>A Python-based library offering <strong>graph-structured multi-agent environments</strong></p></li>
+<li><p>The <strong>first standardized open-source implementations</strong> of theoretical graph-based MARL problems</p></li>
+<li><p>A collection of <strong>benchmark results</strong> using independent and centralized learning algorithms</p></li>
+</ul>
+</section>
+<section id="quick-links">
+<h2>Quick Links<a class="headerlink" href="#quick-links" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>📦 GitHub repository: <a class="reference external" href="https://github.com/yojul/cognac">COGNAC</a></p></li>
+<li><p>📊 Benchmark examples: <a class="reference external" href="https://github.com/yojul/cognac-benchmark-example">cognac-benchmark-example</a></p></li>
+</ul>
+<p>COGNAC is a Python-based benchmark suite offering flexible, graph-structured,
+cooperative multi-agent environments for MARL research. The package offers standardized minimal
+implementations of several well-known theoretical graph-based MARL problems taken from the literature such as the SysAdmin network <span id="id1">[<a class="reference internal" href="#id17" title="Carlos Guestrin, Daphne Koller, and Ronald Parr. Max-norm projections for factored mdps. In IJCAI, volume 1, 673–682. 2001.">Guestrin <em>et al.</em></a>]</span>
+or Firefighting Graph <span id="id2">[<a class="reference internal" href="#id22" title="Frans A Oliehoek, Christopher Amato, and others. A concise introduction to decentralized POMDPs. Volume 1. Springer, 2016.">Oliehoek <em>et al.</em></a>]</span>,
+adapted for empirical benchmarking with modern RL tooling.</p>
+</section>
 </section>
 <section id="list-of-environments">
 <h1>List of Environments<a class="headerlink" href="#list-of-environments" title="Link to this heading"></a></h1>
@@ -153,44 +185,77 @@ graph structures for benchmarking purposes with various sizes and properties: Di
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="marl.html">Experimenting with MARL</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Technical Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="source/cognac.core.html">Core Object</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="source/cognac.core.html#module-cognac.core.BaseEnv">BaseEnv</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/cognac.core.html#module-cognac.core.BaseReward">BaseReward</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="source/cognac.env.html">Environments</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="source/cognac.env.BinaryConsensus.html">Binary Consensus</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/cognac.env.FirefightingGraph.html">Firefighting Graph</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/cognac.env.SysAdmin.html">SysAdmin Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/cognac.env.html#module-cognac.env">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="source/cognac.utils.html">Utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="source/cognac.utils.html#module-cognac.utils.graph_utils">Graph &amp; Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="source/cognac.utils.html#module-cognac.utils.visualization">Rendering &amp; Visualization</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="source/cognac.core.html">Core Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/cognac.env.html">Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/cognac.utils.html">Utilities</a></li>
 </ul>
 </div>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
 <div class="docutils container" id="id3">
 <div role="list" class="citation-list">
-<div class="citation" id="id18" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<div class="citation" id="id43" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<p>Ravindra K Ahuja, Thomas L Magnanti, James B Orlin, and others. <em>Network flows: theory, algorithms, and applications</em>. Volume 1. Prentice hall Englewood Cliffs, NJ, 1993.</p>
+</div>
+<div class="citation" id="id51" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<p>Eugenio Bargiacchi, Timothy Verstraeten, and Diederik M Roijers. Cooperative prioritized sweeping. In <em>Proceedings of the 20th International Conference on Autonomous Agents and MultiAgent Systems (AAMAS)</em>, 160–168. 2021.</p>
+</div>
+<div class="citation" id="id52" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
+<p>Federico Bianchi, Alberto Castellini, Alessandro Farinelli, Luca Marzari, Daniele Meli, Francesco Trotti, Celeste Veronese, and others. Developing safe and explainable autonomous agents: from simulation to the real world. In <em>CEUR WORKSHOP PROCEEDINGS</em>, 89–94. 2024.</p>
+</div>
+<div class="citation" id="id17" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">4</a><span class="fn-bracket">]</span></span>
 <p>Carlos Guestrin, Daphne Koller, and Ronald Parr. Max-norm projections for factored mdps. In <em>IJCAI</em>, volume 1, 673–682. 2001.</p>
 </div>
-<div class="citation" id="id23" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<div class="citation" id="id18" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></span>
+<p>Carlos Guestrin, Michail Lagoudakis, and Ronald Parr. Coordinated reinforcement learning. In <em>ICML</em>, volume 2, 227–234. Citeseer, 2002.</p>
+</div>
+<div class="citation" id="id19" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></span>
+<p>Richard A Holley and Thomas M Liggett. Ergodic theorems for weakly interacting infinite systems and the voter model. <em>The annals of probability</em>, pages 643–663, 1975.</p>
+</div>
+<div class="citation" id="id15" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></span>
+<p>Jueming Hu, Zhe Xu, Weichang Wang, Guannan Qu, Yutian Pang, and Yongming Liu. Decentralized graph-based multi-agent reinforcement learning using reward machines. <em>Neurocomputing</em>, 564:126974, 2024.</p>
+</div>
+<div class="citation" id="id50" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></span>
+<p>Aditya Mahajan and Mehnaz Mannan. Decentralized stochastic control. <em>Annals of Operations Research</em>, 241(1):109–126, 2016.</p>
+</div>
+<div class="citation" id="id22" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">9</a><span class="fn-bracket">]</span></span>
 <p>Frans A Oliehoek, Christopher Amato, and others. <em>A concise introduction to decentralized POMDPs</em>. Volume 1. Springer, 2016.</p>
 </div>
+<div class="citation" id="id44" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></span>
+<p>Frans A Oliehoek, Matthijs TJ Spaan, Nikos Vlassis, and Shimon Whiteson. Exploiting locality of interaction in factored dec-pomdps. In <em>Int. Joint Conf. on Autonomous Agents and Multi-Agent Systems</em>. 2008.</p>
+</div>
+<div class="citation" id="id49" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></span>
+<p>James M Ooi and Gregory W Wornell. Decentralized control of a multiple access broadcast channel: performance bounds. In <em>Proceedings of 35th IEEE Conference on Decision and Control</em>, volume 1, 293–298. IEEE, 1996.</p>
+</div>
+<div class="citation" id="id48" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></span>
+<p>Feng Wu, S Zilberstein, and N.R. Jennings. Monte-carlo expectation maximization for decentralized pomdps. In <em>Proceedings of the 23rd International Joint Conference on AI (IJCAI) (03/08/13 - 09/08/13)</em>, 397–403. 2013. URL: <a class="reference external" href="https://eprints.soton.ac.uk/351021/">https://eprints.soton.ac.uk/351021/</a>.</p>
 </div>
 </div>
+</div>
+</section>
 </section>
 
 

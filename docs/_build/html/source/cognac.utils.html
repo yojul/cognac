@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="SysAdmin Network" href="cognac.env.SysAdmin.html" /> 
+    <link rel="prev" title="🔁 Multi-Commodity Flow Environment" href="cognac.env.MultiCommodityFlow.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -105,50 +105,167 @@
 <span id="graph-network"></span><h2>Graph &amp; Network<a class="headerlink" href="#module-cognac.utils.graph_utils" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="cognac.utils.graph_utils.generate_adjacency_matrix">
-<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_adjacency_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.graph_utils.generate_adjacency_matrix" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_adjacency_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#cognac.utils.graph_utils.generate_adjacency_matrix" title="Link to this definition"></a></dt>
+<dd><p>Generate a random weighted adjacency matrix.</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>n<span class="classifier">int</span></dt><dd><p>Number of nodes in the graph.</p>
+</dd>
+<dt>gain<span class="classifier">float, optional</span></dt><dd><p>Maximum value of weights (default is 0.3).</p>
+</dd>
+<dt>p<span class="classifier">float, optional</span></dt><dd><p>Probability of an edge between two nodes (default is 0.2).</p>
+</dd>
+<dt>symmetry<span class="classifier">bool, optional</span></dt><dd><p>If True, the matrix will be symmetric (undirected graph).</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>np.ndarray</dt><dd><p>A square matrix of shape (n, n) representing weighted edges.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cognac.utils.graph_utils.generate_band_adjacency_matrix">
-<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_band_adjacency_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighborhood_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.graph_utils.generate_band_adjacency_matrix" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_band_adjacency_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighborhood_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#cognac.utils.graph_utils.generate_band_adjacency_matrix" title="Link to this definition"></a></dt>
+<dd><p>Generate a banded adjacency matrix where each node connects to neighbors within a
+band.</p>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>n<span class="classifier">int</span></dt><dd><p>Number of nodes.</p>
+</dd>
+<dt>neighborhood_size<span class="classifier">int</span></dt><dd><p>Range of neighbors each node connects to on either side.</p>
+</dd>
+<dt>p_min<span class="classifier">float, optional</span></dt><dd><p>Minimum weight of an edge (default is 0.2).</p>
+</dd>
+<dt>p_max<span class="classifier">float, optional</span></dt><dd><p>Maximum weight of an edge (default is 1.0).</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h3>Returns<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>np.ndarray</dt><dd><p>A banded weighted adjacency matrix of shape (n, n).</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cognac.utils.graph_utils.generate_coordination_graph">
-<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_coordination_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.graph_utils.generate_coordination_graph" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_coordination_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DiGraph</span></span></span><a class="headerlink" href="#cognac.utils.graph_utils.generate_coordination_graph" title="Link to this definition"></a></dt>
+<dd><p>Generate a directed NetworkX graph from an influence matrix.</p>
+<section id="id3">
+<h3>Parameters<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>matrix<span class="classifier">np.ndarray</span></dt><dd><p>A 2D square numpy array where entry (i, j) indicates
+the influence of node j on node i.</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h3>Returns<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>networkx.DiGraph</dt><dd><p>A directed graph representation of the influence matrix.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cognac.utils.graph_utils.generate_dag_influence_matrix">
-<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_dag_influence_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.graph_utils.generate_dag_influence_matrix" title="Link to this definition"></a></dt>
-<dd><p>Generates a random Directed Acyclic Graph (DAG) with n nodes.</p>
-<p>Parameters:
-- n (int): Number of nodes in the graph.
-- p (float): Probability of an edge existing between two nodes.</p>
-<p>Returns:
-- np.ndarray: An n x n adjacency matrix representing the DAG.</p>
+<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_dag_influence_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#cognac.utils.graph_utils.generate_dag_influence_matrix" title="Link to this definition"></a></dt>
+<dd><p>Generate a random Directed Acyclic Graph (DAG) influence matrix.</p>
+<section id="id5">
+<h3>Parameters<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>n<span class="classifier">int</span></dt><dd><p>Number of nodes.</p>
+</dd>
+<dt>p<span class="classifier">float, optional</span></dt><dd><p>Probability of an edge existing between two nodes (default is 1).</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h3>Returns<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>np.ndarray</dt><dd><p>An upper-triangular binary matrix representing a DAG.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cognac.utils.graph_utils.generate_deterministic_adjacency_matrix">
-<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_deterministic_adjacency_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.graph_utils.generate_deterministic_adjacency_matrix" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">generate_deterministic_adjacency_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#cognac.utils.graph_utils.generate_deterministic_adjacency_matrix" title="Link to this definition"></a></dt>
+<dd><p>Generate a deterministic binary adjacency matrix with fixed edge probability.</p>
+<section id="id7">
+<h3>Parameters<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>n<span class="classifier">int</span></dt><dd><p>Number of nodes.</p>
+</dd>
+<dt>p<span class="classifier">float, optional</span></dt><dd><p>Probability of an edge existing (default is 0.2).</p>
+</dd>
+<dt>symmetry<span class="classifier">bool, optional</span></dt><dd><p>Whether the matrix should be symmetric.</p>
+</dd>
+</dl>
+</section>
+<section id="id8">
+<h3>Returns<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>np.ndarray</dt><dd><p>A binary adjacency matrix of shape (n, n).</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cognac.utils.graph_utils.plot_influence_graph">
-<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">plot_influence_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.graph_utils.plot_influence_graph" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">plot_influence_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.graph_utils.plot_influence_graph" title="Link to this definition"></a></dt>
+<dd><p>Plot a directed graph representing influences between nodes.</p>
+<p>Each node represents an entity, and directed edges (with weights)
+indicate influence from one node to another.</p>
+<section id="id9">
+<h3>Parameters<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>matrix<span class="classifier">np.ndarray</span></dt><dd><p>A square 2D numpy array where entry (i, j) represents
+the influence of node j on node i.</p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h3>Returns<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>None</dt><dd><p>Displays the plotted influence graph using matplotlib.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cognac.utils.graph_utils.to_stochastic_matrix">
 <span class="sig-prename descclassname"><span class="pre">cognac.utils.graph_utils.</span></span><span class="sig-name descname"><span class="pre">to_stochastic_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prob_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#cognac.utils.graph_utils.to_stochastic_matrix" title="Link to this definition"></a></dt>
-<dd><p>Transforms a given matrix into a row-stochastic matrix.</p>
-<p>Each row is normalized so that it sums to 1. If a row sums to 0,
-it is replaced with a uniform distribution over its columns.</p>
-<p>Parameters:
-- prob_matrix (np.ndarray): A 2D numpy array representing a probability matrix.</p>
-<p>Returns:
-- np.ndarray: A row-stochastic version of the input matrix.</p>
+<dd><p>Convert a matrix into a row-stochastic matrix.</p>
+<p>Each row is normalized so it sums to 1. If a row has all zeros,
+it is replaced with a uniform distribution over columns.</p>
+<section id="id11">
+<h3>Parameters<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>prob_matrix<span class="classifier">np.ndarray</span></dt><dd><p>A 2D numpy array representing transition probabilities or weights.</p>
+</dd>
+</dl>
+</section>
+<section id="id12">
+<h3>Returns<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>np.ndarray</dt><dd><p>A row-normalized stochastic matrix.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 </section>
@@ -156,8 +273,40 @@ it is replaced with a uniform distribution over its columns.</p>
 <span id="rendering-visualization"></span><h2>Rendering &amp; Visualization<a class="headerlink" href="#module-cognac.utils.visualization" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="cognac.utils.visualization.GifRenderingWrapper">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cognac.utils.visualization.</span></span><span class="sig-name descname"><span class="pre">GifRenderingWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.visualization.GifRenderingWrapper" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cognac.utils.visualization.</span></span><span class="sig-name descname"><span class="pre">GifRenderingWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ParallelEnv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.visualization.GifRenderingWrapper" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A wrapper for PettingZoo environments that captures and saves the environment’s
+visual trajectory as an animated GIF.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The gif rendering wrapper is still a work in progress and rely on proper r
+endering
+capability of environment. We are working on it to provide working solution to
+generate gif from trajectories.</p>
+</div>
+<p>This is useful for visualizing multi-agent interactions over time, particularly in
+notebook-based workflows or for producing documentation and demos.</p>
+<section id="id13">
+<h3>Parameters<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>env<span class="classifier">pettingzoo.ParallelEnv</span></dt><dd><p>The environment to wrap. It must implement a <cite>render(fig, ax)</cite> method that
+draws the environment state using Matplotlib.</p>
+</dd>
+<dt>duration<span class="classifier">float, optional</span></dt><dd><p>Duration (in seconds) per frame in the output GIF. Default is 0.3.</p>
+</dd>
+</dl>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>env<span class="classifier">pettingzoo.ParallelEnv</span></dt><dd><p>The original environment instance being wrapped.</p>
+</dd>
+<dt>frames<span class="classifier">list</span></dt><dd><p>A list of image frames (as numpy arrays) captured during the environment
+rollout.</p>
+</dd>
+<dt>duration<span class="classifier">float</span></dt><dd><p>Time interval between frames in the generated GIF.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="cognac.utils.visualization.GifRenderingWrapper.capture_frame">
 <span class="sig-name descname"><span class="pre">capture_frame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.visualization.GifRenderingWrapper.capture_frame" title="Link to this definition"></a></dt>
@@ -166,22 +315,57 @@ it is replaced with a uniform distribution over its columns.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cognac.utils.visualization.GifRenderingWrapper.generate_gif">
-<span class="sig-name descname"><span class="pre">generate_gif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'trajectory.gif'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.visualization.GifRenderingWrapper.generate_gif" title="Link to this definition"></a></dt>
-<dd><p>Save the captured frames as a GIF.</p>
+<span class="sig-name descname"><span class="pre">generate_gif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'trajectory.gif'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.visualization.GifRenderingWrapper.generate_gif" title="Link to this definition"></a></dt>
+<dd><p>Generate and save a GIF from the captured frames.</p>
+<section id="id14">
+<h4>Parameters<a class="headerlink" href="#id14" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>output_filename<span class="classifier">str, optional</span></dt><dd><p>Name of the output GIF file (default is “trajectory.gif”).</p>
+</dd>
+</dl>
+</section>
+<section id="id15">
+<h4>Returns<a class="headerlink" href="#id15" title="Link to this heading"></a></h4>
+<p>None</p>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cognac.utils.visualization.GifRenderingWrapper.reset">
 <span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.visualization.GifRenderingWrapper.reset" title="Link to this definition"></a></dt>
-<dd><p>Reset environment and clear frames.</p>
+<dd><p>Reset the environment and clear any previously stored frames.</p>
+<section id="id16">
+<h4>Returns<a class="headerlink" href="#id16" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>Any</dt><dd><p>The output of the wrapped environment’s <cite>reset</cite> method.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cognac.utils.visualization.GifRenderingWrapper.step">
 <span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cognac.utils.visualization.GifRenderingWrapper.step" title="Link to this definition"></a></dt>
-<dd><p>Perform a step and save the frame.</p>
+<dd><p>Step the environment forward using the provided actions and capture the
+frame.</p>
+<section id="id17">
+<h4>Parameters<a class="headerlink" href="#id17" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>action_dict<span class="classifier">dict</span></dt><dd><p>A dictionary mapping agent names to their actions.</p>
+</dd>
+</dl>
+</section>
+<section id="id18">
+<h4>Returns<a class="headerlink" href="#id18" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>tuple</dt><dd><p>A tuple (obs, reward, done, trunc, info) as returned by
+the wrapped environment.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
+</section>
 </dd></dl>
 
 </section>
@@ -191,7 +375,7 @@ it is replaced with a uniform distribution over its columns.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cognac.env.SysAdmin.html" class="btn btn-neutral float-left" title="SysAdmin Network" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cognac.env.MultiCommodityFlow.html" class="btn btn-neutral float-left" title="🔁 Multi-Commodity Flow Environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import functools
+from typing import Dict, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -20,14 +21,17 @@ import numpy as np
 from gymnasium.spaces import Discrete, MultiDiscrete
 from pettingzoo import ParallelEnv
 
+from ...core.BaseReward import BaseReward
 from ...utils.graph_utils import generate_coordination_graph
 from .rewards import FactoredRewardModel
 
 
 class BinaryConsensusNetworkEnvironment(ParallelEnv):
-    """
-    A multi-agent consensus environment where agents attempt to reach a binary consensus
-    based on an influence graph.
+    """A multi-agent reinforcement learning environment modeling binary consensus.
+
+    Agents interact on a probabilistic influence graph and attempt to reach a common
+    binary state (0 or 1). Each agent's action influences its own state and that of its
+    neighbors according to the adjacency matrix.
     """
 
     metadata = {"name": "binary_consensus_environment_v0"}
@@ -37,22 +41,24 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
         adjacency_matrix: np.ndarray,
         max_steps: int = 100,
         show_neighborhood_state: bool = True,
-        reward_class: type = FactoredRewardModel,
+        reward_class: type[BaseReward] = FactoredRewardModel,
         is_global_reward: bool = False,
     ):
-        """
-        Initialize the environment.
+        """Initialize the consensus environment.
 
-        Args:
-            adjacency_matrix (np.ndarray): Adjacency matrix.
-            max_steps (int, optional): Maximum number of steps before truncation.
-                Defaults to 100.
-            show_neighborhood_state (bool, optional): If True, agents can observe
-                neighbors' states. Defaults to True.
-            reward_class (type, optional): Reward model class. Defaults to
-                FactoredRewardModel.
-            is_global_reward (bool, optional): If True, uses a global reward function.
-                Defaults to False.
+        Parameters
+        ----------
+        adjacency_matrix : np.ndarray
+            A square matrix representing the influence between agents.
+            Values must be in the range [0, 1] with zero diagonal.
+        max_steps : int, optional
+            Maximum number of steps before the episode is truncated. Default is 100.
+        show_neighborhood_state : bool, optional
+            Whether each agent observes its neighborhood. Default is True.
+        reward_class : type, optional
+            Class used for computing rewards. Must implement the reward model interface.
+        is_global_reward : bool, optional
+            If True, use a shared global reward. If False, compute rewards per agent.
         """
 
         self.adjacency_matrix = adjacency_matrix
@@ -88,9 +94,12 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
         self.state_space = MultiDiscrete([2] * self.n_agents)
 
     def _check_adjacency_matrix(self) -> None:
-        """
-        Validate the influence graph by ensuring its diagonal is zero
-        and that probabilities are in the range [0,1].
+        """Ensure adjacency matrix has valid structure.
+
+        Raises
+        ------
+        AssertionError
+            If the diagonal is non-zero or probabilities are not in [0, 1].
         """
         assert all(
             [self.adjacency_matrix_prob[i, i] == 0 for i in range(self.n_agents)]
@@ -99,17 +108,24 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
             self.adjacency_matrix_prob >= 0
         )
 
-    def reset(self, seed: int = None, options: dict = None) -> tuple:
-        """
-        Reset the environment to its initial state.
+    def reset(
+        self, seed: Optional[int] = None, options: Optional[Dict] = None
+    ) -> Tuple[Dict[int, np.ndarray], Dict[int, dict]]:
+        """Reset the environment to its initial state.
 
-        Args:
-            seed (int, optional): Random seed. Defaults to None.
-            options (dict, optional): Options for initialization,
-                such as initial state vector. Defaults to None.
+        Parameters
+        ----------
+        seed : int, optional
+            Random seed for reproducibility.
+        options : dict, optional
+            Options for reset (e.g. "init_vect" for setting an initial state).
 
-        Returns:
-            tuple: Observations and information dictionary.
+        Returns
+        -------
+        observations : dict
+            Observations for each agent after reset.
+        infos : dict
+            Info dictionaries for each agent.
         """
         self.agents = list(range(self.n_agents))
         self.timestep = 0
@@ -127,16 +143,34 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
         self.reward.reset(self._state)
         return observations, infos
 
-    def step(self, actions: dict) -> tuple:
-        """
-        Execute one step in the environment given agents' actions.
+    def step(self, actions: Dict[int, int]) -> Tuple[
+        Dict[int, np.ndarray],
+        Dict[int, float],
+        Dict[int, bool],
+        Dict[int, bool],
+        Dict[int, dict],
+    ]:
+        """Perform one environment step using the given agent actions.
 
-        Args:
-            actions (dict): Dictionary mapping agent indices to their actions.
+        Parameters
+        ----------
+        actions : dict
+            Mapping from agent index to their binary action (0 or 1).
 
-        Returns:
-            tuple: Observations, rewards, terminations, truncations, and info.
+        Returns
+        -------
+        observations : dict
+            New observations for each agent.
+        rewards : dict
+            Rewards assigned to each agent or shared globally.
+        terminations : dict
+            Flags indicating whether each agent's episode is terminated.
+        truncations : dict
+            Flags indicating whether each agent's episode is truncated.
+        infos : dict
+            Additional metadata for each agent.
         """
+
         self.influence_activation = np.random.binomial(
             1, self.adjacency_matrix_prob, size=(self.n_agents, self.n_agents)
         )
@@ -183,23 +217,26 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
         return observations, rewards, terminations, truncations, infos
 
     def get_majority_value(self) -> int:
-        """
-        Get the current majority value in the system.
+        """Compute the current majority binary value.
 
-        Returns:
-            int: 1 if majority is 1, 0 if majority is 0, -1 if tied.
+        Returns
+        -------
+        int
+            1 if majority is 1, 0 if majority is 0, -1 if tied.
         """
         n_one = np.count_nonzero(self._state)
         return (
             1 if n_one > self.n_agents / 2 else 0 if n_one < self.n_agents / 2 else -1
         )
 
-    def get_obs(self) -> dict:
-        """
-        Retrieve the observation dictionary for all agents.
+    def get_obs(self) -> Dict[int, np.ndarray]:
+        """Get current observations for all agents.
 
-        Returns:
-            dict: Dictionary mapping agent indices to their respective observations.
+        Returns
+        -------
+        dict
+            Observations keyed by agent index, each containing a binary vector
+            of the agent's neighborhood.
         """
         return {
             agent: self._state[self.neighboring_masks[agent]]
@@ -207,8 +244,7 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
         }
 
     def render(self, save_frame: bool = False, fig=None, ax=None) -> None:
-        """
-        Render the current state of the environment.
+        """Render the current state of the environment.
 
         Args:
             save_frame (bool, optional): Whether to save the current
@@ -254,29 +290,43 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
 
     @functools.lru_cache(maxsize=None)
     def observation_space(self, agent: int) -> MultiDiscrete:
-        """
-        Define the observation space for a given agent.
+        """Return the observation space for a given agent.
 
-        Args:
-            agent (int): Agent index.
+        Parameters
+        ----------
+        agent : int
+            Index of the agent.
 
-        Returns:
-            MultiDiscrete: Observation space of the agent.
+        Returns
+        -------
+        MultiDiscrete
+            Observation space describing possible binary observations
+            from the agent's neighborhood.
         """
         return MultiDiscrete([2] * np.count_nonzero(self.neighboring_masks[agent]))
 
     @functools.lru_cache(maxsize=None)
     def action_space(self, agent: int) -> Discrete:
-        """
-        Define the action space for an agent.
+        """Return the action space for a given agent.
 
-        Args:
-            agent (int): Agent index.
+        Parameters
+        ----------
+        agent : int
+            Index of the agent.
 
-        Returns:
-            Discrete: Action space (binary choice: 0 or 1).
+        Returns
+        -------
+        Discrete
+            Action space with two discrete actions: 0 or 1.
         """
         return Discrete(2)
 
-    def state(self) -> MultiDiscrete:
+    def state(self) -> np.ndarray:
+        """Get the internal environment state.
+
+        Returns
+        -------
+        np.ndarray
+            Array of current binary states for all agents.
+        """
         return self._state

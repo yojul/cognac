@@ -24,10 +24,50 @@ from pettingzoo import ParallelEnv
 
 from .rewards import DefaultFFGReward
 
+"""
+Multi-agent fire fighting graph environments for PettingZoo.
+
+These environments simulate scenarios in which agents coordinate
+to extinguish fires in a linear (row) or grid layout of houses.
+They are useful for studying coordination and distributed control
+in multi-agent reinforcement learning.
+"""
+
 
 class RowFireFightingGraphEnvironment(ParallelEnv):
-    """
-    A multi-agent environment where agents try to manage a row of houses in fire.
+    """A row-based multi-agent fire fighting environment.
+
+    Each agent is responsible for extinguishing fires in adjacent houses.
+    Fire levels increase probabilistically based on neighboring fires
+    and the presence of firefighters.
+
+    Parameters
+    ----------
+    n_agents : int
+        Number of agents.
+    max_steps : int
+        Maximum number of environment steps.
+    max_fire_level : int
+        Maximum fire level a house can reach.
+    reward_class : type, optional
+        Reward function class to compute rewards.
+    is_global_reward : bool, optional
+        Whether to use a shared global reward or individual rewards.
+
+    Attributes
+    ----------
+    n_agents : int
+        Number of agents.
+    n_houses : int
+        Number of houses (n_agents + 1).
+    max_steps : int
+        Maximum number of environment steps.
+    max_fire_level : int
+        Maximum fire level a house can reach.
+    reward : DefaultFFGReward
+        Reward function instance.
+    is_global_reward : bool
+        Whether to use a shared global reward.
     """
 
     metadata = {"name": "row_firefighting_environment_v0"}
@@ -82,16 +122,21 @@ class RowFireFightingGraphEnvironment(ParallelEnv):
         self.last_visited_house = {agent: agent for agent in range(self.n_agents)}
 
     def reset(self, seed: int = None, options: dict = None) -> tuple:
-        """
-        Reset the environment to its initial state.
+        """Resets the environment to an initial state.
 
-        Args:
-            seed (int, optional): Random seed. Defaults to None.
-            options (dict, optional): Options for initialization,
-                such as initial state vector. Defaults to None.
+        Parameters
+        ----------
+        seed : int, optional
+            Random seed for reproducibility.
+        options : dict, optional
+            Initialization options, including an optional "init_vect"
+            to specify initial fire levels.
 
-        Returns:
-            tuple: Observations and information dictionary.
+        Returns
+        -------
+        tuple
+            A dictionary of agent observations and a dictionary
+            of additional info for each agent.
         """
         self.agents = self.possible_agents
         self.rng = np.random.default_rng(seed)
@@ -112,14 +157,23 @@ class RowFireFightingGraphEnvironment(ParallelEnv):
         return observations, infos
 
     def step(self, actions: dict) -> tuple:
-        """
-        Execute one step in the environment given agents' actions.
+        """Executes a single step of environment dynamics.
 
-        Args:
-            actions (dict): Dictionary mapping agent indices to their actions.
+        Parameters
+        ----------
+        actions : dict
+            A mapping from agent identifiers to actions
+            (0 to stay, 1 to move right).
 
-        Returns:
-            tuple: Observations, rewards, terminations, truncations, and info.
+        Returns
+        -------
+        tuple
+            A 5-tuple containing:
+            - observations (dict): Updated observations.
+            - rewards (dict): Rewards for each agent.
+            - terminations (dict): Episode termination status.
+            - truncations (dict): Episode truncation status.
+            - infos (dict): Additional per-agent information.
         """
 
         self.last_visited_house = {
@@ -198,11 +252,12 @@ class RowFireFightingGraphEnvironment(ParallelEnv):
             return state[house - 1] > 0 or state[house + 1] > 0
 
     def get_obs(self) -> dict:
-        """
-        Retrieve the observation dictionary for all agents.
+        """Computes the observable flame status for each agent's current location.
 
-        Returns:
-            dict: Dictionary mapping agent indices to their respective observations.
+        Returns
+        -------
+        dict
+            Observations per agent as binary flame detection (0 or 1).
         """
         obs = {}
         for agent in self.possible_agents:
@@ -223,16 +278,16 @@ class RowFireFightingGraphEnvironment(ParallelEnv):
         return obs
 
     def render(self, save_frame: bool = False, fig=None, ax=None) -> None:
-        """
-        Render the current state of the environment.
+        """Renders the current fire level and agent positions on the graph.
 
-        Args:
-            save_frame (bool, optional): Whether to save the current
-                frame as an image. Defaults to False.
-            fig (matplotlib.figure.Figure, optional): Figure for rendering.
-                Defaults to None.
-            ax (matplotlib.axes.Axes, optional): Axes for rendering.
-                Defaults to None.
+        Parameters
+        ----------
+        save_frame : bool, optional
+            If True, saves the rendered frame.
+        fig : Figure, optional
+            Matplotlib figure object.
+        ax : Axes, optional
+            Matplotlib axes object.
         """
         if fig is None:
             plt.figure(figsize=(6, 6))
@@ -270,34 +325,78 @@ class RowFireFightingGraphEnvironment(ParallelEnv):
 
     @functools.lru_cache(maxsize=None)
     def observation_space(self, agent: int) -> Discrete:
-        """
-        Define the observation space for a given agent.
+        """Returns the observation space of a given agent.
 
-        Args:
-            agent (int): Agent index.
+        Parameters
+        ----------
+        agent : int
+            Index of the agent.
 
-        Returns:
-            Discrete: Observation space of the agent.
+        Returns
+        -------
+        Discrete
+            Observation space with binary outcome (0 or 1).
         """
         return Discrete(2)
 
     @functools.lru_cache(maxsize=None)
     def action_space(self, agent: int) -> Discrete:
-        """
-        Define the action space for an agent.
+        """Returns the action space of a given agent.
 
-        Args:
-            agent (int): Agent index.
+        Parameters
+        ----------
+        agent : int
+            Index of the agent.
 
-        Returns:
-            Discrete: Action space (binary choice: 0 or 1).
+        Returns
+        -------
+        Discrete
+            Action space with 2 actions (0 or 1).
         """
         return Discrete(2)
 
 
 class GridFireFightingGraphEnvironment(ParallelEnv):
-    """
-    A multi-agent environment where agents try to manage a row of houses in fire.
+    """A grid-based multi-agent fire fighting environment.
+
+    Each agent controls a cell in a grid and must cooperate
+    with others to suppress fires in a shared neighborhood.
+    Fire spread and extinguishing dynamics depend on spatial
+    proximity and the actions of neighboring agents.
+
+    Parameters
+    ----------
+    n_width : int
+        Grid width.
+    n_height : int
+        Grid height.
+    max_steps : int
+        Maximum number of environment steps.
+    max_fire_level : int
+        Maximum fire level a house can reach.
+    reward_class : type, optional
+        Reward function class to compute rewards.
+    is_global_reward : bool, optional
+        Whether to use a shared global reward or individual rewards.
+
+    Attributes
+    ----------
+    n_width : int
+        Grid width.
+    n_height : int
+        Grid height.
+    n_agents : int
+        Total number of agents.
+    n_houses : int
+        Total number of houses.
+    max_steps : int
+        Maximum number of environment steps.
+    max_fire_level : int
+        Maximum fire level a house can reach.
+    reward : DefaultFFGReward
+        Reward function instance.
+    is_global_reward : bool
+        Whether to use a shared global reward.
     """
 
     metadata = {"name": "grid_firefighting_environment_v0"}
@@ -356,16 +455,20 @@ class GridFireFightingGraphEnvironment(ParallelEnv):
         self._act_id_to_house_pos_dict = {0: (0, 0), 1: (0, 1), 2: (1, 0), 3: (1, 1)}
 
     def reset(self, seed: int = None, options: dict = None) -> tuple:
-        """
-        Reset the environment to its initial state.
+        """Resets the grid environment to an initial state.
 
-        Args:
-            seed (int, optional): Random seed. Defaults to None.
-            options (dict, optional): Options for initialization,
-                such as initial state vector. Defaults to None.
+        Parameters
+        ----------
+        seed : int, optional
+            Random seed.
+        options : dict, optional
+            Initialization options including optional
+            initial fire states under "init_vect".
 
-        Returns:
-            tuple: Observations and information dictionary.
+        Returns
+        -------
+        tuple
+            Observations and additional information for each agent.
         """
         self.agents = self.possible_agents
         self.rng = np.random.default_rng(seed)
@@ -388,14 +491,18 @@ class GridFireFightingGraphEnvironment(ParallelEnv):
         return observations, infos
 
     def step(self, actions: dict[tuple, int]) -> tuple:
-        """
-        Execute one step in the environment given agents' actions.
+        """Executes a step in the grid-based environment.
 
-        Args:
-            actions (dict): Dictionary mapping agent indices to their actions.
+        Parameters
+        ----------
+        actions : dict of tuple to int
+            Mapping from (row, col) agent indices to actions.
 
-        Returns:
-            tuple: Observations, rewards, terminations, truncations, and info.
+        Returns
+        -------
+        tuple
+            Updated observations, rewards, terminations,
+            truncations, and info dictionaries.
         """
 
         self.last_visited_house = {
@@ -491,6 +598,18 @@ class GridFireFightingGraphEnvironment(ParallelEnv):
         return observations, rewards, terminations, truncations, infos
 
     def _is_burning_neighbors(self, state: np.ndarray) -> np.ndarray:
+        """Determine which cells in a 2D grid have burning neighbors.
+
+        Parameters
+        ----------
+        state : np.ndarray
+            2D array of fire levels.
+
+        Returns
+        -------
+        np.ndarray
+            Boolean array indicating where at least one neighbor is burning.
+        """
         up = np.zeros_like(state, dtype=bool)
         down = np.zeros_like(state, dtype=bool)
         left = np.zeros_like(state, dtype=bool)
@@ -504,6 +623,20 @@ class GridFireFightingGraphEnvironment(ParallelEnv):
         return up | down | left | right
 
     def _is_burning_neighbors_1d(state: np.ndarray) -> np.ndarray:
+        """Determine which houses in a 1D row have burning neighbors.
+
+        .. warning:: Internal mask method use for the step dynamics.
+
+        Parameters
+        ----------
+        state : np.ndarray
+            1D array of fire levels.
+
+        Returns
+        -------
+        np.ndarray
+            Boolean array indicating where a neighbor is burning.
+        """
         left = np.zeros_like(state, dtype=bool)
         right = np.zeros_like(state, dtype=bool)
 
@@ -513,9 +646,34 @@ class GridFireFightingGraphEnvironment(ParallelEnv):
         return left | right  # burning neighbor on either side
 
     def _is_burning(self) -> np.ndarray:
+        """Identify which houses are currently burning.
+
+        .. warning:: Internal mask method use for the step dynamics.
+
+        Returns
+        -------
+        np.ndarray
+            Boolean array where True indicates a burning house.
+        """
         return self.state > 0
 
     def _act_id_to_house_pos(self, agent: tuple, act_id: int) -> tuple:
+        """Map an action ID to the house position relative to an agent.
+
+        .. warning:: Internal mask method use for the step dynamics.
+
+        Parameters
+        ----------
+        agent : tuple
+            Agent's grid position.
+        act_id : int
+            Action identifier.
+
+        Returns
+        -------
+        tuple
+            The corresponding house position in the grid.
+        """
         i, j = self._act_id_to_house_pos_dict[int(act_id)]
         return agent[0] + i, agent[1] + j
 
@@ -526,11 +684,17 @@ class GridFireFightingGraphEnvironment(ParallelEnv):
         return visit_map
 
     def get_obs(self) -> dict:
-        """
-        Retrieve the observation dictionary for all agents.
+        """Compute the number of visits each house receives from all agents.
 
-        Returns:
-            dict: Dictionary mapping agent indices to their respective observations.
+        Parameters
+        ----------
+        joint_act : dict
+            Mapping from agent positions to their chosen action.
+
+        Returns
+        -------
+        np.ndarray
+            A 2D array indicating the number of visits per house.
         """
         obs = {}
         for agent in self.possible_agents:
@@ -551,17 +715,18 @@ class GridFireFightingGraphEnvironment(ParallelEnv):
         return obs
 
     def render(self, save_frame: bool = False, fig=None, ax=None) -> None:
-        """
-        Render the current state of the environment.
+        """Render the current state of the environment.
 
-        Args:
-            save_frame (bool, optional): Whether to save the current frame as an image.
-                Defaults to False.
-            fig (matplotlib.figure.Figure, optional): Figure for rendering.
-                Defaults to None.
-            ax (matplotlib.axes.Axes, optional): Axes for rendering.
-                Defaults to None.
+        Parameters
+        ----------
+        save_frame : bool, optional
+            Whether to save the current frame as an image. Default is False.
+        fig : matplotlib.figure.Figure, optional
+            Figure object to use for rendering. If None, a new figure is created.
+        ax : matplotlib.axes.Axes, optional
+            Axes object to render on. If None, rendering occurs on the current axes.
         """
+
         if fig is None:
             plt.figure(figsize=(6, 6))
 
@@ -598,26 +763,32 @@ class GridFireFightingGraphEnvironment(ParallelEnv):
 
     @functools.lru_cache(maxsize=None)
     def observation_space(self, agent: tuple) -> Discrete:
-        """
-        Define the observation space for a given agent.
+        """Define the observation space for a given agent.
 
-        Args:
-            agent (int): Agent index.
+        Parameters
+        ----------
+        agent : tuple
+            Agent identifier.
 
-        Returns:
-            Discrete: Observation space of the agent.
+        Returns
+        -------
+        gymnasium.spaces.Discrete
+            Observation space of the agent (binary outcomes).
         """
         return Discrete(2)
 
     @functools.lru_cache(maxsize=None)
     def action_space(self, agent: tuple) -> Discrete:
-        """
-        Define the action space for an agent.
+        """Define the action space for a given agent.
 
-        Args:
-            agent (int): Agent index.
+        Parameters
+        ----------
+        agent : tuple
+            Agent identifier.
 
-        Returns:
-            Discrete: Action space (binary choice: 0 or 1).
+        Returns
+        -------
+        gymnasium.spaces.Discrete
+            Action space of the agent (4 discrete actions).
         """
         return Discrete(4)

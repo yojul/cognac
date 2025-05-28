@@ -16,4 +16,12 @@ from abc import ABC
 
 
 class BaseNetworkedEnv(ABC):
+    """
+
+    .. note::
+        This is a core object for Environment instance.
+        It is a work in progress to build a common basis
+        for all networked based environments.
+    """
+
     pass

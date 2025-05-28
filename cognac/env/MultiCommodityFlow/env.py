@@ -25,6 +25,69 @@ from .rewards import DefaultMCFReward
 
 
 class MultiCommodityFlowEnvironment(ParallelEnv):
+    """Multi-Commodity Flow Environment based on a directed graph representing agents as
+    nodes controlling flow of multiple commodities through edges.
+
+    This environment models a circulation network where agents redistribute
+    commodities along outgoing edges, subject to capacity constraints. It
+    supports multi-agent reinforcement learning via the PettingZoo ParallelEnv
+    interface.
+
+    Parameters
+    ----------
+    adjacency_matrix : np.ndarray
+        Square matrix describing the influence graph adjacency between agents.
+        Positive/negative entries define direction and influence strength.
+    n_commodities : int, optional
+        Number of commodity types flowing in the network (default is 5).
+    max_capacity : int, optional
+        Maximum capacity of each edge or node (default is 100).
+    max_steps : int, optional
+        Maximum number of steps per episode before termination (default is 20).
+    reward_class : type, optional
+        Class used to compute the reward at each step (default is DefaultMCFReward).
+    is_global_reward : bool, optional
+        Whether to use a global reward shared across all agents
+        or individual rewards (default False).
+
+    Attributes
+    ----------
+    adjacency_matrix : np.ndarray
+        The input adjacency matrix of the network.
+    n_agents : int
+        Number of agents/nodes in the network.
+    possible_agents : list of int
+        List of agent indices representing nodes.
+    max_capacity : int
+        Maximum capacity of edges/nodes.
+    network : networkx.DiGraph
+        Directed graph representing the network topology and flows.
+    timestep : int
+        Current time step in the episode.
+    state : object
+        Current environment state (custom structure).
+    reward : object
+        Reward function instance for computing step rewards.
+    influence_activation : np.ndarray
+        Boolean matrix indicating active influences between agents.
+    influence_sgn : np.ndarray
+        Matrix indicating sign (+/-) of influences.
+    adjacency_matrix_prob : np.ndarray
+        Absolute value of adjacency matrix entries, interpreted as probabilities.
+
+    Methods
+    -------
+    reset(seed=None, options=None)
+        Reset the environment to initial state and sample initial flows.
+    step(actions)
+        Perform one environment step applying agent actions and updating flows.
+    get_obs()
+        Return observations for all agents.
+    observation_space(agent)
+        Return the observation space for a given agent.
+    action_space(agent)
+        Return the action space for a given agent.
+    """
 
     metadata = {"name": "multicommodity_flow_environment_v0"}
 
@@ -71,6 +134,26 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         self.pos_layout = nx.circular_layout(self.network)
 
     def _init_type_node(self) -> None:
+        """Initialize node types in the network graph based on connectivity.
+
+        Node types:
+        - 'source': no predecessors (input node)
+        - 'sink': no successors (output node)
+        - 'circulation': has both predecessors and successors
+        - 'unconnected': isolated node (no predecessors or successors)
+
+        Sets the "type" attribute on each node in the network graph.
+
+        Raises
+        ------
+        AssertionError
+            If the network does not contain at least one source and one sink node,
+            or if it contains unsupported types.
+
+        .. warning::
+           Internal use only. This method is intended for internal environment setup.
+        """
+
         for n, data in self.network.nodes(data=True):
             if len(self.network.pred[n]) == 0 and len(self.network.succ[n]) == 0:
                 data["type"] = "unconnected"
@@ -91,10 +174,20 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         "or alternatively only circulation nodes. Please check the graph."
 
     def _check_influence_graph(self) -> None:
+        """Validate the influence graph properties.
+
+        Checks that the diagonal of the adjacency matrix probability matrix is zero,
+        ensuring no self-influence, and verifies that all entries are within [0,1].
+
+        Raises
+        ------
+        AssertionError
+            If the diagonal entries are not zero or if any entry is out of bounds.
+
+        .. warning::
+           Internal use only. Used to ensure network consistency.
         """
-        Validate the influence graph by ensuring its diagonal is zero
-        and that probabilities are in the range [0,1].
-        """
+
         assert all(
             [self.adjacency_matrix_prob[i, i] == 0 for i in range(self.n_agents)]
         )
@@ -103,16 +196,24 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         )
 
     def reset(self, seed: int = None, options: dict = None) -> tuple:
-        """
-        Reset the environment to its initial state.
+        """Reset the environment to the initial state.
 
-        Args:
-            seed (int, optional): Random seed. Defaults to None.
-            options (dict, optional): Options for initialization,
-                such as initial state vector. Defaults to None.
+        Resets all agent states, network flows, and commodities to initial random
+        values subject to capacity constraints.
 
-        Returns:
-            tuple: Observations and information dictionary.
+        Parameters
+        ----------
+        seed : int, optional
+            Seed for random number generators to ensure reproducibility.
+        options : dict, optional
+            Additional options for environment reset.
+
+        Returns
+        -------
+        tuple
+            A tuple containing:
+            - observations (dict): Mapping from agent ID to initial observation.
+            - infos (dict): Mapping from agent ID to info dict (empty by default).
         """
         self.agents = self.possible_agents.copy()
         self.timestep = 0
@@ -155,9 +256,29 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         return observations, infos
 
     def step(self, actions: dict) -> tuple:
-        """
-        Apply agent actions to redistribute commodities to successors,
-        compute rewards, and update environment state.
+        """Execute a step of the environment using the provided agent actions.
+
+        Each agent redistributes its commodity stock along outgoing edges according
+        to the action distribution. The environment updates flow values, applies
+        reward computation, and checks termination conditions.
+
+        Parameters
+        ----------
+        actions : dict
+            Mapping from agent ID to a list or array of dispatch values for
+            outgoing edges.
+
+        Returns
+        -------
+        tuple
+            A 5-tuple containing:
+            - observations (dict): Agent observations after step.
+            - rewards (dict): Reward values for each agent.
+            - terminations (dict): Boolean flags indicating episode
+            termination per agent.
+            - truncations (dict): Boolean flags indicating episode
+            truncation per agent.
+            - infos (dict): Additional info dictionaries per agent.
         """
         self.timestep += 1
 
@@ -208,6 +329,16 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         return observations, rewards, terminations, truncations, infos
 
     def get_obs(self) -> dict:
+        """Get current observations for all agents.
+
+        Observation consists of the agent's current commodity stock and
+        the flow values of all incoming edges concatenated into a single numpy array.
+
+        Returns
+        -------
+        dict
+            Mapping from agent ID to numpy array representing the observation.
+        """
         observations = {}
         for agent in self.possible_agents:
             incoming_edges = self.network.in_edges(agent, data=True)
@@ -223,16 +354,26 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
     def _split_integer_by_distribution(
         self, stock: int, distribution: list[float]
     ) -> list:
-        """
-        Splits integer X into parts according to a given distribution,
-        such that the parts are integers and sum exactly to X.
+        """Split an integer stock into parts proportional to a given distribution.
 
-        Args:
-            X (int): The total integer to split.
-            distribution (list of float): The target proportions (should sum to 1).
+        Ensures that the returned list of integer parts sums exactly to `stock`.
+        The splitting is done by flooring the proportional amounts and distributing
+        the remainder according to the highest fractional parts.
 
-        Returns:
-            list of int: List of integers summing to X, approximating the distribution.
+        Parameters
+        ----------
+        stock : int
+            Total integer value to split.
+        distribution : list of float
+            List of proportions (not necessarily normalized) that sum to 1.
+
+        Returns
+        -------
+        list of int
+            List of integer parts summing exactly to `stock`.
+
+        .. warning::
+           Internal utility method for flow distribution calculation.
         """
         # Step 1: Multiply X by each proportion
         if len(distribution) == 1:
@@ -256,14 +397,26 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
 
     @functools.lru_cache(maxsize=None)
     def observation_space(self, agent: int) -> MultiDiscrete:
-        """
-        Define the observation space for a given agent.
+        """Split an integer stock into parts proportional to a given distribution.
 
-        Args:
-            agent (int): Agent index.
+        Ensures that the returned list of integer parts sums exactly to `stock`.
+        The splitting is done by flooring the proportional amounts and distributing
+        the remainder according to the highest fractional parts.
 
-        Returns:
-            MultiDiscrete: Observation space of the agent.
+        Parameters
+        ----------
+        stock : int
+            Total integer value to split.
+        distribution : list of float
+            List of proportions (not necessarily normalized) that sum to 1.
+
+        Returns
+        -------
+        list of int
+            List of integer parts summing exactly to `stock`.
+
+        .. warning::
+           Internal utility method for flow distribution calculation.
         """
         return MultiDiscrete(
             [self.max_capacity] * (len(self.network.in_edges(agent)) + 1)
@@ -271,14 +424,21 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
 
     @functools.lru_cache(maxsize=None)
     def action_space(self, agent: int) -> Discrete:
-        """
-        Define the action space for an agent.
+        """Return the action space specification for a given agent.
 
-        Args:
-            agent (int): Agent index.
+        If the agent has no outgoing edges, returns a zero-dimensional Box.
+        Otherwise, returns a Box space with shape equal to the number of outgoing edges,
+        with each action value in [0.0, 1.0], representing proportions.
 
-        Returns:
-            Discrete: Action space (binary choice: 0 or 1).
+        Parameters
+        ----------
+        agent : int
+            Agent index.
+
+        Returns
+        -------
+        Box
+            Gymnasium Box space defining valid actions for the agent.
         """
         out_deg = len(list(self.network.out_edges(agent)))
         if out_deg == 0:
