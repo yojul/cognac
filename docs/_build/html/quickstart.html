@@ -18,7 +18,9 @@
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Experimenting with MARL" href="marl.html" />
+    <link rel="prev" title="🥃 Welcome to COGNAC’s Documentation" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,11 +42,24 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Technical Documentation</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="marl.html">Experimenting with MARL</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Technical Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="source/cognac.core.html">cognac.core package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/cognac.env.html">cognac.env package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="source/cognac.utils.html">cognac.utils package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/cognac.core.html">Core Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/cognac.env.html">Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/cognac.utils.html">Utilities</a></li>
 </ul>
 
         </div>
@@ -73,12 +88,71 @@
              
   <section id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<p>COGNAC provides a PettingZoo implementation of various MARL problems with inherent graph-structure. The package can be used directly
+<em>out-of-the-box</em> with large flexibility as implemented problems have minimal and self-contained dynamics with customizable hyperparameters.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<section id="requirements">
+<h3>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h3>
+<p>This software uses Python 3. It is developed with version 3.12 but should also work with previous version (&gt;= 3.6).
+It is available on pypi (python package index) and, hence, can be installed easily.</p>
+<p>We recommend creating a dedicated virtual env to install the package and perform experiments (e.g. conda distribution or venv).
+The python requirements are minimal and the package rely on standard package for RL environment (<em>Gymnasium, Petting-Zoo</em>) and widely used package such as <em>numpy</em> or <em>matplotlib</em> for visualization.
+As the package is dedicated to problems with graph/network structure we leverage <em>networkx</em> package capabilities.</p>
+</section>
+<section id="id1">
+<h3>Installation<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p><strong>Simple installation directly from Pypi - (Recommended)</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>cognac
+</pre></div>
+</div>
+<p><strong>Installation for advanced modification of dynamics or development purpose</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yojul/cognac.git
+<span class="nb">cd</span><span class="w"> </span>cognac
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The code has been developed on MacOS and should be fully compatible with Linux. While, we expect it to work properly on Windows, there might be some bugs. Feel free to report any bug on GitHub.</p>
+</div>
+</section>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<p>Running a simple instance of an environment is straightforward and very similar to any standard PettingZoo environment and Gym-like APIs.
+Environments directly inherit from PettingZoo Parallel Environment, for further details, please check <a class="reference external" href="https://pettingzoo.farama.org/index.html">PettingZoo documentation</a>.
+Therefore, it is easy to adapt any pre-existing RL and MARL code to one of the COGNAC’s environment.
+In addition, there are some utility functions to generate graph-structures (mainly through adjacency matrix) but also vizualization tools.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cognac.env</span><span class="w"> </span><span class="kn">import</span> <span class="n">BinaryConsensusNetworkEnvironment</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cognac.utils.graph_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_adjacency_matrix</span><span class="p">,</span> <span class="n">plot_influence_graph</span>
+
+<span class="c1"># Utility for generating random adjacency matrix</span>
+<span class="n">adjacency_matrix</span> <span class="o">=</span> <span class="n">generate_adjacency_matrix</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Ploting influence graph (see figure below)</span>
+<span class="n">plot_influence_graph</span><span class="p">(</span><span class="n">adjacency_matrix</span><span class="p">)</span>
+
+<span class="c1"># Instantiating environment with adjacency matrix and default parameters</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">BinaryConsensusNetworkEnvironment</span><span class="p">(</span><span class="n">adjacency_matrix</span><span class="o">=</span><span class="n">adjacency_matrix</span><span class="p">)</span>
+
+<span class="c1"># Standard PettingZoo usage. See PettingZoo documentation for more details.</span>
+<span class="n">obs</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="n">obs</span><span class="p">,</span> <span class="n">rewards</span><span class="p">,</span> <span class="n">dones</span><span class="p">,</span> <span class="n">truncs</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span>
+    <span class="p">{</span><span class="n">agent</span><span class="p">:</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="p">(</span><span class="n">agent</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">possible_agents</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="🥃 Welcome to COGNAC’s Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="marl.html" class="btn btn-neutral float-right" title="Experimenting with MARL" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

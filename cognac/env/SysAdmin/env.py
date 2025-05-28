@@ -24,6 +24,89 @@ from .rewards import SysAdminDefaultReward
 
 
 class SysAdminNetworkEnvironment(ParallelEnv):
+    """Multi-agent environment simulating a network of machines managed by agents, based
+    on the "SysAdmin" problem setting.
+
+    Each agent controls one machine, which can be in states representing its
+    operational condition (good, faulty, dead) and job state (idle, loaded, successful).
+    Machines can influence each other’s failure rates based on a given network adjacency
+    matrix.
+
+    The environment follows a discrete timestep progression with reboot actions,
+    task completions, faults propagation, and rewards computed per step.
+
+    Parameters
+    ----------
+    adjacency_matrix : np.ndarray
+        Square matrix of shape (n_agents, n_agents) representing network connections.
+        Entry (i, j) indicates influence of agent j on agent i.
+        Must have zeros on diagonal initially (no self influence).
+    max_steps : int, default=100
+        Maximum number of timesteps before the environment is terminated.
+    show_neighborhood_state : bool, default=True
+        If True, agents observe not only their own state but also their
+        neighbors' states.
+    reward_class : BaseReward subclass, default=SysAdminDefaultReward
+        Class to compute the rewards. Should be derived from BaseReward.
+    is_global_reward : bool, default=False
+        If True, a single global reward is returned to all agents.
+    base_arrival_rate : float, default=0.5
+        Probability of new job arriving for an available machine at each step.
+    base_fail_rate : float, default=0.1
+        Base failure rate for machines without external influence.
+    dead_rate_multiplier : float, default=0.2
+        Multiplier for probability of machine becoming dead influenced
+        by faulty neighbors.
+    base_success_rate : float, default=0.3
+        Probability that a working loaded machine completes its task successfully.
+    faulty_success_rate : float, default=0.1
+        Probability that a faulty loaded machine completes its task successfully.
+
+    Attributes
+    ----------
+    adjacency_matrix : np.ndarray
+        Original adjacency matrix representing the network structure.
+    adjacency_matrix_prob : np.ndarray
+        Processed stochastic matrix of influence probabilities with
+        self-failures included.
+    n_agents : int
+        Number of agents (machines) in the environment.
+    possible_agents : list of int
+        List of all agent IDs.
+    state : np.ndarray
+        Current state array of shape (n_agents, 2) with machine status
+        and job state.
+    timestep : int
+        Current timestep counter.
+    max_steps : int
+        Maximum allowed timesteps before termination.
+    reward : BaseReward
+        Instance of the reward class used to calculate rewards.
+    is_global_reward : bool
+        Flag indicating if rewards are global or individual.
+    neighboring_masks : np.ndarray (bool)
+        Boolean mask matrix indicating which agents observe each other.
+
+    Methods
+    -------
+    reset(seed=None, options=None)
+        Reset environment state and return initial observations.
+    step(actions)
+        Perform one timestep given agents' actions; update state and return results.
+    get_obs()
+        Get the current observations dictionary for all agents.
+    render()
+        Print the current state of the environment (to be implemented).
+    observation_space(agent)
+        Return the observation space object for the specified agent.
+    action_space(agent)
+        Return the action space object for the specified agent.
+
+    .. warning::
+        Methods prefixed with an underscore (`_`) are for internal use only and
+        should not be called directly by users.
+    """
+
     metadata = {
         "name": "sysadmin_environment_v0",
     }
@@ -78,6 +161,19 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             )
 
     def _check_adjacency_matrix(self):
+        """
+        .. warning::
+            Internal use.
+
+        Validates the adjacency matrix to ensure:
+        - Diagonal elements are zero (no self influence initially).
+        - All entries are probabilities in [0, 1].
+
+        Raises
+        ------
+        AssertionError
+            If any of the validation checks fail.
+        """
         # Check that the diagonal is zero
         assert all(
             [self.adjacency_matrix_prob[i, i] == 0 for i in range(self.n_agents)]
@@ -88,6 +184,16 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         )
 
     def _scale_adjacency_matrix(self):
+        """
+        .. warning::
+            Internal use.
+
+        Scales the adjacency_matrix_prob so that the maximum row or
+        column sum is at most 1.
+        This ensures the resulting matrix can be interpreted as a
+        stochastic influence
+        matrix.
+        """
         row_sums = self.adjacency_matrix_prob.sum(axis=1)
         max_row_sum = np.max(row_sums)
 
@@ -107,6 +213,23 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         )
 
     def reset(self, seed=None, options=None):
+        """Reset the environment to its initial state.
+
+        Parameters
+        ----------
+        seed : int or None, optional
+            Seed for the random number generator for reproducibility.
+        options : dict or None, optional
+            Additional options for environment reset (currently unused).
+
+        Returns
+        -------
+        observations : dict
+            Dictionary mapping agent IDs to their initial observations.
+        infos : dict
+            Dictionary mapping agent IDs to info dictionaries
+            (empty in this implementation).
+        """
         self.agents = list(range(self.n_agents))
         self.timestep = 0
         self.state = np.zeros((self.n_agents, 2))
@@ -124,6 +247,37 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         return observations, infos
 
     def step(self, actions):
+        """Advance the environment by one timestep given agents' actions.
+
+        Parameters
+        ----------
+        actions : dict
+            Dictionary mapping agent IDs to their actions. Each action is an integer:
+            0 for "do nothing", 1 for "reboot".
+
+        Returns
+        -------
+        observations : dict
+            Dictionary mapping agent IDs to their new observations.
+        rewards : dict
+            Dictionary mapping agent IDs to their rewards for this step.
+        terminations : dict
+            Dictionary mapping agent IDs to termination flags (bool).
+        truncations : dict
+            Dictionary mapping agent IDs to truncation flags (bool).
+        infos : dict
+            Dictionary mapping agent IDs to info dictionaries (empty in this
+            implementation).
+
+        Notes
+        -----
+        - Rebooted machines are reset to working and idle state.
+        - Machines working on tasks may complete successfully based on probabilities.
+        - Faulty and dead states evolve probabilistically influenced by network
+            neighbors.
+        - Rewards are computed via the configured reward class.
+        - Environment terminates after `max_steps`.
+        """
 
         # STEP 0 : Launch reboot of machines as requested
         act_vect = np.array([act for act in actions.values()]).reshape((self.n_agents,))
@@ -203,42 +357,157 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         return observations, rewards, terminations, truncations, infos
 
     def _working_mask(self):
+        """
+        .. warning::
+            Internal use.
+
+        Boolean mask for machines currently in working state.
+
+        Returns
+        -------
+        np.ndarray
+            Boolean array where True indicates the machine is working (state code 0).
+        """
+
         return self.state[:, 0] == 0
 
     def _faulty_working_mask(self):
+        """
+        .. warning::
+            Internal use.
+
+        Boolean mask for machines currently in faulty or dead state.
+
+        Returns
+        -------
+        np.ndarray
+            Boolean array where True indicates machine is faulty or dead
+            (state code != 0).
+        """
         return self.state[:, 0] != 0
 
     def _working_loaded_mask(self):
+        """
+        .. warning::
+            Internal use.
+
+        Boolean mask for machines that are working and currently loaded with a job.
+
+        Returns
+        -------
+        np.ndarray
+            Boolean array where True indicates working and loaded machines.
+        """
         return (self.state[:, 0] == 0) & (self.state[:, 1] == 1)
 
     def _faulty_loaded_mask(self):
+        """
+        .. warning::
+            Internal use.
+
+        Boolean mask for machines that are faulty and currently loaded with a job.
+
+        Returns
+        -------
+        np.ndarray
+            Boolean array where True indicates faulty and loaded machines.
+        """
         return (self.state[:, 0] == 1) & (self.state[:, 1] == 1)
 
     def _done_mask(self):
+        """
+        .. warning::
+            Internal use.
+
+        Boolean mask for machines that have completed their jobs.
+
+        Returns
+        -------
+        np.ndarray
+            Boolean array where True indicates machines done with their tasks.
+        """
         return (self.state[:, 0] != 2) & (self.state[:, 1] == 2)
 
     def _available_mask(self):
+        """
+        .. warning::
+            Internal use.
+
+        Boolean mask for machines that are available to receive new jobs
+        (working and currently idle).
+
+        Returns
+        -------
+        np.ndarray
+            Boolean array where True indicates available machines.
+        """
         return (self.state[:, 1] == 0) & (self.state[:, 0] == 0)
 
     def get_obs(self) -> dict:
-        """Get the observation dict for the multi-agent environment from
-        the current state of the system.
+        """Retrieve the current observation for each agent.
 
-        Returns:
-            dict: Dictionnary of observations for each agent.
+        Observations consist of each agent's own machine state vector.
+
+        Returns
+        -------
+        dict
+            Mapping from agent IDs to their observations
+            (np.ndarray of shape (2,)).
         """
         observations = {agent: self.state[agent] for agent in range(self.n_agents)}
         return observations
 
-    def render(self):  # TODO
+    def render(self):
+        """Render the current environment state.
+
+        Currently prints the raw state array.
+
+        Notes
+        -----
+        This method is a placeholder and should be implemented to provide
+        a graphical or structured visualization of the environment.
+        """
         print(self.state)
 
     @functools.lru_cache(maxsize=None)
     def observation_space(self, agent) -> MultiDiscrete:
-        return MultiDiscrete(
-            [3, 3]
-        )  # ["good","faulty", "dead"] ["idle", "loaded", "successful"]
+        """Return the observation space for the given agent.
+
+        The observation space is a MultiDiscrete space describing machine status
+        and job state with discrete values:
+
+        - Machine status: 0=good, 1=faulty, 2=dead
+        - Job state: 0=idle, 1=loaded, 2=successful
+
+        Parameters
+        ----------
+        agent : int
+            Agent identifier.
+
+        Returns
+        -------
+        gymnasium.spaces.MultiDiscrete
+            Observation space for the agent.
+        """
+        return MultiDiscrete([3, 3])
 
     @functools.lru_cache(maxsize=None)
     def action_space(self, agent) -> Discrete:
-        return Discrete(2, start=0)  # ["do nothing", "reboot"]
+        """Return the action space for the given agent.
+
+        Actions are discrete:
+
+        - 0: do nothing
+        - 1: reboot machine
+
+        Parameters
+        ----------
+        agent : int
+            Agent identifier.
+
+        Returns
+        -------
+        gymnasium.spaces.Discrete
+            Action space for the agent.
+        """
+        return Discrete(2, start=0)

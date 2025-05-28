@@ -3,7 +3,24 @@ import networkx as nx
 import numpy as np
 
 
-def plot_influence_graph(matrix):
+def plot_influence_graph(matrix: np.ndarray):
+    """Plot a directed graph representing influences between nodes.
+
+    Each node represents an entity, and directed edges (with weights)
+    indicate influence from one node to another.
+
+    Parameters
+    ----------
+    matrix : np.ndarray
+        A square 2D numpy array where entry (i, j) represents
+        the influence of node j on node i.
+
+    Returns
+    -------
+    None
+        Displays the plotted influence graph using matplotlib.
+    """
+
     G = nx.DiGraph()
     n = matrix.shape[0]
 
@@ -41,7 +58,27 @@ def plot_influence_graph(matrix):
     plt.show()
 
 
-def generate_adjacency_matrix(n, gain=0.3, p=0.2, symmetry=False):
+def generate_adjacency_matrix(
+    n: int, gain: float = 0.3, p=0.2, symmetry: bool = False
+) -> np.ndarray:
+    """Generate a random weighted adjacency matrix.
+
+    Parameters
+    ----------
+    n : int
+        Number of nodes in the graph.
+    gain : float, optional
+        Maximum value of weights (default is 0.3).
+    p : float, optional
+        Probability of an edge between two nodes (default is 0.2).
+    symmetry : bool, optional
+        If True, the matrix will be symmetric (undirected graph).
+
+    Returns
+    -------
+    np.ndarray
+        A square matrix of shape (n, n) representing weighted edges.
+    """
     matrix = (
         gain
         * np.random.rand(n, n)
@@ -56,7 +93,26 @@ def generate_adjacency_matrix(n, gain=0.3, p=0.2, symmetry=False):
 
 def generate_band_adjacency_matrix(
     n: int, neighborhood_size: int, p_min: float = 0.2, p_max: float = 1.0
-):
+) -> np.ndarray:
+    """Generate a banded adjacency matrix where each node connects to neighbors within a
+    band.
+
+    Parameters
+    ----------
+    n : int
+        Number of nodes.
+    neighborhood_size : int
+        Range of neighbors each node connects to on either side.
+    p_min : float, optional
+        Minimum weight of an edge (default is 0.2).
+    p_max : float, optional
+        Maximum weight of an edge (default is 1.0).
+
+    Returns
+    -------
+    np.ndarray
+        A banded weighted adjacency matrix of shape (n, n).
+    """
     assert neighborhood_size > 0, "Neighborhood size should be positive."
     assert (
         neighborhood_size < n // 2
@@ -72,7 +128,25 @@ def generate_band_adjacency_matrix(
     return matrix
 
 
-def generate_deterministic_adjacency_matrix(n, p=0.2, symmetry=False):
+def generate_deterministic_adjacency_matrix(
+    n: int, p: float = 0.2, symmetry: bool = False
+) -> np.ndarray:
+    """Generate a deterministic binary adjacency matrix with fixed edge probability.
+
+    Parameters
+    ----------
+    n : int
+        Number of nodes.
+    p : float, optional
+        Probability of an edge existing (default is 0.2).
+    symmetry : bool, optional
+        Whether the matrix should be symmetric.
+
+    Returns
+    -------
+    np.ndarray
+        A binary adjacency matrix of shape (n, n).
+    """
     matrix = (np.random.rand(n, n) > (1 - p)).astype(float)
     np.fill_diagonal(matrix, 0)
     if symmetry:
@@ -81,16 +155,20 @@ def generate_deterministic_adjacency_matrix(n, p=0.2, symmetry=False):
         return matrix
 
 
-def generate_dag_influence_matrix(n, p=1):
-    """
-    Generates a random Directed Acyclic Graph (DAG) with n nodes.
+def generate_dag_influence_matrix(n: int, p: float = 1.0) -> np.ndarray:
+    """Generate a random Directed Acyclic Graph (DAG) influence matrix.
 
-    Parameters:
-    - n (int): Number of nodes in the graph.
-    - p (float): Probability of an edge existing between two nodes.
+    Parameters
+    ----------
+    n : int
+        Number of nodes.
+    p : float, optional
+        Probability of an edge existing between two nodes (default is 1).
 
-    Returns:
-    - np.ndarray: An n x n adjacency matrix representing the DAG.
+    Returns
+    -------
+    np.ndarray
+        An upper-triangular binary matrix representing a DAG.
     """
     matrix = (np.random.rand(n, n) < p).astype(float)
     np.fill_diagonal(matrix, 0)  # No self-loops
@@ -101,7 +179,20 @@ def generate_dag_influence_matrix(n, p=1):
     return matrix
 
 
-def generate_coordination_graph(matrix):
+def generate_coordination_graph(matrix: np.ndarray) -> nx.DiGraph:
+    """Generate a directed NetworkX graph from an influence matrix.
+
+    Parameters
+    ----------
+    matrix : np.ndarray
+        A 2D square numpy array where entry (i, j) indicates
+        the influence of node j on node i.
+
+    Returns
+    -------
+    networkx.DiGraph
+        A directed graph representation of the influence matrix.
+    """
     G = nx.DiGraph()
     n = matrix.shape[0]
 
@@ -118,17 +209,20 @@ def generate_coordination_graph(matrix):
 
 
 def to_stochastic_matrix(prob_matrix: np.ndarray) -> np.ndarray:
-    """
-    Transforms a given matrix into a row-stochastic matrix.
+    """Convert a matrix into a row-stochastic matrix.
 
-    Each row is normalized so that it sums to 1. If a row sums to 0,
-    it is replaced with a uniform distribution over its columns.
+    Each row is normalized so it sums to 1. If a row has all zeros,
+    it is replaced with a uniform distribution over columns.
 
-    Parameters:
-    - prob_matrix (np.ndarray): A 2D numpy array representing a probability matrix.
+    Parameters
+    ----------
+    prob_matrix : np.ndarray
+        A 2D numpy array representing transition probabilities or weights.
 
-    Returns:
-    - np.ndarray: A row-stochastic version of the input matrix.
+    Returns
+    -------
+    np.ndarray
+        A row-normalized stochastic matrix.
     """
     prob_matrix = np.array(prob_matrix, dtype=float)
     row_sums = prob_matrix.sum(axis=1, keepdims=True)

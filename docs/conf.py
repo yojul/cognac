@@ -37,4 +37,5 @@ html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
 highlight_language = "python3"
 
+bibtex_default_style = "author_year"
 bibtex_bibfiles = ["refs.bib"]

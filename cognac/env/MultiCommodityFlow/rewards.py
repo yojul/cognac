@@ -16,8 +16,8 @@ from ...core.BaseReward import BaseReward
 
 
 class DefaultMCFReward(BaseReward):
-    """
-    Default reward function for the Multi Commodity Flow environment.
+    """Default reward function for the Multi Commodity Flow environment.
+
     The reward is the negative of the total cost of the flow.
     """
 

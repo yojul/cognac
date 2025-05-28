@@ -49,4 +49,8 @@ line_length = 88
 max-line-length = 88
 extend-ignore = ["E203", "W503"]
 
+[tool.docformatter]
+wrap-summaries = 88
+wrap-descriptions = 88
+
 [tool.setuptools_scm]
