@@ -254,7 +254,9 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
                     },
                     "flow",
                 )
-                # assert data["commodities"] == sum(flow_distrib)  # Security for dev
+                assert np.all(
+                    data["commodities"] == np.sum(flow_distrib, axis=1)
+                )  # Security for dev
             else:
                 data["commodities"] = 0
 
@@ -354,11 +356,8 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         for agent in self.possible_agents:
             incoming_edges = self.network.in_edges(agent, data=True)
             # outgoing_edges = self.network.out_edges(agent, data=True)
-            observations[agent] = np.concatenate(
-                [
-                    np.array([self.network.nodes[agent]["commodities"]]),
-                    np.array([data["flow"] for _, _, data in incoming_edges]),
-                ]
+            observations[agent] = np.array(
+                [data["flow"] for _, _, data in incoming_edges]
             )
         return observations
 
@@ -454,7 +453,8 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
            Internal utility method for flow distribution calculation.
         """
         return MultiDiscrete(
-            [self.max_capacity] * (len(self.network.in_edges(agent)) + 1)
+            self.max_capacity
+            * np.ones((len(self.network.in_edges(agent)), self.n_commodities))
         )
 
     @functools.lru_cache(maxsize=None)
