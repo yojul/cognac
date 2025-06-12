@@ -119,8 +119,8 @@ def generate_band_adjacency_matrix(
     ), "The size of the neighborhood can be at most n/2. Try a lower value"
     matrix = (
         np.tri(n, n, neighborhood_size)
-        - np.tri(10, 10, -neighborhood_size - 1)
-        - np.identity(10)
+        - np.tri(n, n, -neighborhood_size - 1)
+        - np.identity(n)
     )
     matrix[np.nonzero(matrix)] = 0.25 + 0.75 * np.random.random(
         size=len(np.nonzero(matrix)[0])

@@ -21,7 +21,7 @@ from gymnasium.spaces import Box, Discrete, MultiDiscrete
 from pettingzoo import ParallelEnv
 
 from ...utils.graph_utils import generate_coordination_graph
-from .rewards import DefaultMCFReward
+from .rewards import MCFWithOverflowPenaltyReward
 
 
 class MultiCommodityFlowEnvironment(ParallelEnv):
@@ -94,10 +94,10 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
     def __init__(
         self,
         adjacency_matrix: np.ndarray,
-        n_commodities: int = 5,
+        n_commodities: int = 3,
         max_capacity: int = 100,
         max_steps: int = 20,
-        reward_class: type = DefaultMCFReward,
+        reward_class: type = MCFWithOverflowPenaltyReward,
         is_global_reward: bool = False,
     ):
 
@@ -218,6 +218,8 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         self.agents = self.possible_agents.copy()
         self.timestep = 0
         self._init_total_circulation = 0
+
+        # NOTE : Currently the environment is only working for circulation problem
         assert all(
             [
                 data["type"] == "circulation" or "unconnected"
@@ -226,27 +228,35 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         ), "Provided network is not suitable for a circulation-only environment."
 
         # Initialize flows at 0
-        nx.set_edge_attributes(self.network, 0, "flow")
+        nx.set_edge_attributes(
+            self.network,
+            np.zeros((self.n_commodities,)),
+            "flow",
+        )
 
         # Sample initial circulation stocks
-        for n, data in self.network.nodes(data=True):
+        for agent, data in self.network.nodes(data=True):
             if data["type"] == "circulation":
-                data["commodities"] = np.random.randint(0, self.max_capacity)
-                self._init_total_circulation += data["commodities"]
-                dsitrib_sample = self.action_space(n).sample()
-                flow_distrib = self._split_integer_by_distribution(
+                data["commodities"] = np.random.randint(
+                    0, self.max_capacity, size=(self.n_commodities,)
+                )
+                self._init_total_circulation += np.sum(data["commodities"])
+                distrib_sample = self._normalize_act(self.action_space(agent).sample())
+                flow_distrib = self._split_integers_by_distributions(
                     data["commodities"],
-                    [d / sum(dsitrib_sample) for d in dsitrib_sample],
+                    distrib_sample,
                 )
                 nx.set_edge_attributes(
                     self.network,
                     {
-                        edge: flow_distrib[idx]
-                        for idx, edge in enumerate(self.network.out_edges(n))
+                        edge: flow_distrib[:, idx]
+                        for idx, edge in enumerate(self.network.out_edges(agent))
                     },
                     "flow",
                 )
-                assert data["commodities"] == sum(flow_distrib)  # Security for dev
+                assert np.all(
+                    data["commodities"] == np.sum(flow_distrib, axis=1)
+                )  # Security for dev
             else:
                 data["commodities"] = 0
 
@@ -285,27 +295,25 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         # Apply dispatching actions at each nodes
         for agent, act in actions.items():
             if len(act) == 0:
+                # Should be already handled at the action space level.
+                # Added here for security.
                 continue
 
-            distrib = [d / sum(act) for d in act]
-            stock_to_dispactch = min(
-                self.max_capacity, self.network.nodes[agent]["commodities"]
-            )
-            self.network.nodes[agent]["commodities"] -= stock_to_dispactch
-            dispatch = self._split_integer_by_distribution(
-                stock_to_dispactch, distribution=distrib
+            distrib = self._normalize_act(act)
+            dispatch = self._split_integers_by_distributions(
+                self.network.nodes[agent]["commodities"], distributions=distrib
             )
             nx.set_edge_attributes(
                 self.network,
                 {
-                    edge: dispatch[idx]
+                    edge: dispatch[:, idx]
                     for idx, edge in enumerate(self.network.out_edges(agent))
                 },
                 "flow",
             )
 
         for agent, data in self.network.nodes(data=True):
-            data["commodities"] += sum(
+            data["commodities"] = sum(
                 [data["flow"] for _, _, data in self.network.in_edges(agent, data=True)]
             )
 
@@ -319,10 +327,15 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
             terminations = {agent: True for agent in self.agents}
             self.agents = []
             rewards = self.reward(actions, self, True, True)
-            # infos = {agent: {"final_reward": rewards[agent]} for agent in self.agents}
+            infos = {agent: {"final_reward": rewards[agent]} for agent in self.agents}
 
         assert (
-            sum([data["commodities"] for _, data in self.network.nodes(data=True)])
+            sum(
+                [
+                    np.sum(data["commodities"])
+                    for _, data in self.network.nodes(data=True)
+                ]
+            )
             == self._init_total_circulation
         ), "The total circulation is not conserved. Please check the flow computation."
 
@@ -343,57 +356,78 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         for agent in self.possible_agents:
             incoming_edges = self.network.in_edges(agent, data=True)
             # outgoing_edges = self.network.out_edges(agent, data=True)
-            observations[agent] = np.concatenate(
-                [
-                    np.array([self.network.nodes[agent]["commodities"]]),
-                    np.array([data["flow"] for _, _, data in incoming_edges]),
-                ]
+            observations[agent] = np.array(
+                [data["flow"] for _, _, data in incoming_edges]
             )
         return observations
 
-    def _split_integer_by_distribution(
-        self, stock: int, distribution: list[float]
-    ) -> list:
-        """Split an integer stock into parts proportional to a given distribution.
-
-        Ensures that the returned list of integer parts sums exactly to `stock`.
-        The splitting is done by flooring the proportional amounts and distributing
-        the remainder according to the highest fractional parts.
+    def _split_integers_by_distributions(
+        self, stocks: np.ndarray, distributions: np.ndarray
+    ) -> np.ndarray:
+        """Split each integer stock into parts proportional to the corresponding
+        distribution.
 
         Parameters
         ----------
-        stock : int
-            Total integer value to split.
-        distribution : list of float
-            List of proportions (not necessarily normalized) that sum to 1.
+        stocks : list[int]
+            List of integer stocks (e.g., [12, 5, 7]).
+        distributions : list[list[float]]
+            List of distributions (row-wise), each summing to 1 (or will be normalized).
 
         Returns
         -------
-        list of int
-            List of integer parts summing exactly to `stock`.
-
-        .. warning::
-           Internal utility method for flow distribution calculation.
+        np.ndarray
+            Array of shape (len(stocks), len(distributions[0])) with integer parts,
+            where each row sums to the corresponding stock value.
         """
-        # Step 1: Multiply X by each proportion
-        if len(distribution) == 1:
-            return [stock]
-        raw_parts = [stock * p for p in distribution]
-        # Step 2: Floor each part to get the initial integer parts
-        int_parts = [int(part) for part in raw_parts]
 
-        # Step 3: Calculate the remainder
-        remainder = stock - sum(int_parts)
+        stocks = np.asarray(stocks)
+        distributions = np.asarray(distributions, dtype=float)
+        if distributions.shape[0] != len(stocks):
+            raise ValueError(
+                f"Number of stocks must match number of distributions."
+                f"{distributions.shape[0]} - {len(stocks)}"
+            )
 
-        # Step 4: Distribute the remainder to the highest fractional parts
-        fractional_parts = [part - int(part) for part in raw_parts]
-        sorted_indices = sorted(
-            range(len(fractional_parts)), key=lambda i: -fractional_parts[i]
-        )
+        # Normalize distributions row-wise
+        row_sums = distributions.sum(axis=1, keepdims=True)
+        row_sums[row_sums == 0] = 1.0  # Prevent division by zero
+        normalized = distributions / row_sums
 
-        for i in range(remainder):
-            int_parts[sorted_indices[i]] += 1
-        return int_parts
+        result = np.zeros_like(normalized, dtype=int)
+
+        for i, (stock, dist) in enumerate(zip(stocks, normalized)):
+            raw_parts = stock * dist
+            int_parts = np.floor(raw_parts).astype(int)
+            remainder = stock - int_parts.sum()
+            fractional_parts = raw_parts - int_parts
+            top_indices = np.argsort(-fractional_parts)[:remainder]
+            int_parts[top_indices] += 1
+            result[i] = int_parts
+
+        return result
+
+    def _normalize_act(self, act):
+        """Normalize a NumPy array to a row-wise stochastic matrix.
+
+        Each row is normalized so that the sum of its elements is 1.
+        Rows that sum to 0 remain all zeros to avoid division by zero.
+
+        Parameters:
+        ----------
+        matrix : np.ndarray
+            A 2D NumPy array to normalize.
+
+        Returns:
+        -------
+        np.ndarray
+            A row-wise stochastic version of the input matrix.
+        """
+        act = np.array(act, dtype=float)  # Ensure float for division
+        row_sums = act.sum(axis=1, keepdims=True)
+        # Avoid division by zero
+        row_sums[row_sums == 0] = 1.0
+        return act / row_sums
 
     @functools.lru_cache(maxsize=None)
     def observation_space(self, agent: int) -> MultiDiscrete:
@@ -419,7 +453,8 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
            Internal utility method for flow distribution calculation.
         """
         return MultiDiscrete(
-            [self.max_capacity] * (len(self.network.in_edges(agent)) + 1)
+            self.max_capacity
+            * np.ones((len(self.network.in_edges(agent)), self.n_commodities))
         )
 
     @functools.lru_cache(maxsize=None)
@@ -443,4 +478,6 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         out_deg = len(list(self.network.out_edges(agent)))
         if out_deg == 0:
             return Box(low=0.0, high=0.0, shape=(0,), dtype=np.float32)
-        return Box(low=0.0, high=1.0, shape=(out_deg,), dtype=np.float32)
+        return Box(
+            low=0.0, high=1.0, shape=(self.n_commodities, out_deg), dtype=np.float32
+        )

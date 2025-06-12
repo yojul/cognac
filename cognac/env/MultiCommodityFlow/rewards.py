@@ -39,3 +39,43 @@ class DefaultMCFReward(BaseReward):
                 / 1e4
             )
         return reward
+
+
+class MCFWithOverflowPenaltyReward(BaseReward):
+    """Reward function for Multi Commodity Flow with overflow penalty.
+
+    The reward is the negative of the total cost of the flow, plus a penalty when total
+    commodity flow on an edge exceeds its capacity.
+    """
+
+    def __init__(self, overflow_penalty_coef=1.0):
+        """
+        Args:
+            overflow_penalty_coef (float): Coefficient to scale overflow penalties.
+        """
+        super().__init__()
+        self.overflow_penalty_coef = overflow_penalty_coef
+
+    def __call__(self, action, env, is_done, is_truncated, as_global=False):
+        reward = {}
+
+        for agent in env.possible_agents:
+            cost = 0.0
+            penalty = 0.0
+
+            for _, _, data in env.network.out_edges(agent, data=True):
+                flow_vector = data[
+                    "flow"
+                ]  # This should be a list or array of flows per commodity
+                total_flow = sum(flow_vector)
+                weight = data["weight"]
+                capacity = data.get("capacity", float("inf"))
+
+                cost += (1 / (weight)) * total_flow
+
+                if total_flow > capacity:
+                    penalty += total_flow - capacity
+
+            reward[agent] = -(cost / 1e4 + self.overflow_penalty_coef * penalty)
+
+        return reward
