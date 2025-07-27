@@ -15,6 +15,13 @@ The following description focuses on the 1D version. The 2D extension is describ
 Environment Description
 -----------------------
 
+.. figure:: ../assets/firefighting-illustration.png
+  :align: center
+  :width: 100%
+  :alt: Illustration for the Firefighting Graph problem (in 1D and 2D).
+  
+  Illustration for the Firefighting Graph problem (in 1D and 2D).
+
 State and Observation
 ~~~~~~~~~~~~~~~~~~~~~
 

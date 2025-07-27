@@ -64,3 +64,10 @@ In addition, there are some utility functions to generate graph-structures (main
     obs, rewards, dones, truncs, infos = env.step(
         {agent: env.action_space(agent).sample() for agent in env.possible_agents}
     )
+
+.. figure:: assets/network_example.png
+  :align: center
+  :width: 400
+  :alt: Example of randomly generated network from adjacency matrix
+  
+  Example of randomly generated network from adjacency matrix.
