@@ -1,5 +1,6 @@
 # 🥃 COGNAC: COoperative Graph-based Networked Agent Challenges
 
+[![Downloads](https://pepy.tech/badge/cognac)](https://pepy.tech/project/cognac)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/cognac)
 ![PyPI - Version](https://img.shields.io/pypi/v/cognac)
 [![LICENSE](https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.txt)
