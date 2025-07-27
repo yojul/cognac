@@ -12,6 +12,14 @@ This problem is challenging due to:
 - Integer flow constraints.
 - Partial observability (agents only observe their own local neighborhood).
 
+.. figure:: ../assets/commodity-flow-illustration.png
+  :align: center
+  :width: 100%
+  :alt: Illustration for the multi-commodity flow problem.
+  
+  Illustration for the multi-commodity flow problem representing the problem from the perspective of a single agent. The objective is to minimize the cost of operating the network. Each agent chooses how to dispatch incoming commodities to its outgoing edges at each step.
+
+
 Overview
 --------
 

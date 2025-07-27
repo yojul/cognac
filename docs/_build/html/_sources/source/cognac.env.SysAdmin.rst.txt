@@ -15,6 +15,13 @@ The environment models a network of computers performing tasks. Each computer (a
 
 This decentralized setting models a **Partially Observable Markov Decision Process** (PoMDP), where coordination between agents is critical for maintaining system-wide performance and limiting fault propagation.
 
+.. figure:: ../assets/sysadmin-illustration.png
+  :align: center
+  :width: 100%
+  :alt: Illustration for one state update in the SysAdmin Network problem.
+  
+  Illustration for one state update in the SysAdmin Network problem.
+
 Graph Topology
 ~~~~~~~~~~~~~~
 

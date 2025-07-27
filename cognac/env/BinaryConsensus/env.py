@@ -93,6 +93,10 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
         }
         self.state_space = MultiDiscrete([2] * self.n_agents)
 
+        self.individual_state_from_obs = {
+            id: sum(row[:id]) for id, row in enumerate(self.neighboring_masks)
+        }
+
     def _check_adjacency_matrix(self) -> None:
         """Ensure adjacency matrix has valid structure.
 
@@ -199,15 +203,14 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
             self.agents = []
 
         truncations = {a: False for a in range(self.n_agents)}
-        if self.timestep > self.max_steps:
+        if self.timestep >= self.max_steps - 1:
             truncations = {a: True for a in self.possible_agents}
             self.agents = []
-
         rewards = self.reward(
             actions,
             self,
             is_done,
-            self.timestep > self.max_steps,
+            self.timestep >= self.max_steps - 1,
             as_global=self.is_global_reward,
         )
         self.timestep += 1

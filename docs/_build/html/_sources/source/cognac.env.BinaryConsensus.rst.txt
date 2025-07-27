@@ -10,6 +10,13 @@ The Binary Consensus problem is a simple yet non-trivial decentralized multi-age
 
 This environment adapts the voter model into a discrete-time decentralized partially observable Markov decision process (Dec-POMDP). Each agent observes its own binary vote as well as those of its neighbors and can choose to retain or flip its vote at each time step. Agents’ states are also stochastically influenced by their neighbors’ actions. Despite its simplicity, the problem presents interesting challenges for coordination and decision-making.
 
+.. figure:: ../assets/binary-consensus-illustration.png
+  :align: center
+  :width: 100%
+  :alt: Illustration for one state update in the binary consensus problem.
+  
+  Illustration for one state update in the Binary Consensus problem.
+
 Problem Formulation
 -------------------
 

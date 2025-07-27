@@ -128,7 +128,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         self.adjacency_matrix = adjacency_matrix
         self.n_agents = adjacency_matrix.shape[0]
         self.possible_agents = list(range(self.n_agents))
-        self.state = None
+        self._state = None
         self.timestep = None
         self.max_steps = max_steps
         self.reward = reward_class()
@@ -207,10 +207,6 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             self.adjacency_matrix_prob = (
                 self.adjacency_matrix_prob / max_col_sum
             )  # scale everything so max row sum is 1.0
-        print(
-            np.max(self.adjacency_matrix_prob.sum(axis=1)),
-            np.max(self.adjacency_matrix_prob.sum(axis=0)),
-        )
 
     def reset(self, seed=None, options=None):
         """Reset the environment to its initial state.
@@ -232,11 +228,11 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         """
         self.agents = list(range(self.n_agents))
         self.timestep = 0
-        self.state = np.zeros((self.n_agents, 2))
+        self._state = np.zeros((self.n_agents, 2))
 
         initial_jobs = np.random.binomial(1, self.base_arrival_rate, size=self.n_agents)
 
-        self.state[:, 1] = initial_jobs
+        self._state[:, 1] = initial_jobs
 
         # Initialize observations for every agent using the initial state vector
         observations = self.get_obs()
@@ -281,16 +277,16 @@ class SysAdminNetworkEnvironment(ParallelEnv):
 
         # STEP 0 : Launch reboot of machines as requested
         act_vect = np.array([act for act in actions.values()]).reshape((self.n_agents,))
-        self.state[act_vect == 1, 0] = 0  # Set machines to reboot to working state
-        self.state[act_vect == 1, 1] = 0
+        self._state[act_vect == 1, 0] = 0  # Set machines to reboot to working state
+        self._state[act_vect == 1, 1] = 0
 
         # STEP 1 : Solve current task
         if np.any(self._working_loaded_mask()):
-            self.state[self._working_loaded_mask(), 1] += np.random.binomial(
+            self._state[self._working_loaded_mask(), 1] += np.random.binomial(
                 1, p=self.base_success_rate, size=self._working_loaded_mask().sum()
             )
         if np.any(self._faulty_loaded_mask()):
-            self.state[self._faulty_loaded_mask(), 1] += np.random.binomial(
+            self._state[self._faulty_loaded_mask(), 1] += np.random.binomial(
                 1, p=self.faulty_success_rate, size=self._faulty_loaded_mask().sum()
             )
 
@@ -298,7 +294,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         # Terminations
         terminations = {agent: False for agent in range(self.n_agents)}
         is_done = False
-        if self.timestep > self.max_steps:
+        if self.timestep >= self.max_steps - 1:
             is_done = True
             terminations = {
                 agent: True for agent in self.possible_agents
@@ -308,7 +304,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         # Check truncation conditions (overwrites termination conditions)
         truncations = {a: False for a in range(self.n_agents)}
         is_truncated = False
-        if self.timestep > self.max_steps:
+        if self.timestep >= self.max_steps - 1:
             # rewards = self.get_final_reward(gain=10)
             is_truncated = True
             truncations = {a: True for a in self.possible_agents}
@@ -319,14 +315,14 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             actions, self, is_done, is_truncated, as_global=self.is_global_reward
         )
         # Reset states
-        self.state[self._done_mask(), 1] = 0
+        self._state[self._done_mask(), 1] = 0
 
         # STEP 3 : Draw new jobs for available machines
         if np.any(self._available_mask()):
-            self.state[self._available_mask(), 1] += np.random.binomial(
+            self._state[self._available_mask(), 1] += np.random.binomial(
                 1,
                 self.base_arrival_rate,
-                size=self.state[self._available_mask(), 1].shape,
+                size=self._state[self._available_mask(), 1].shape,
             )
 
         # STEP 4 : Randomly make machines faulty or dead with networked influence
@@ -339,7 +335,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             ),
             size=self.adjacency_matrix_prob[self._working_mask()].shape[0],
         )
-        self.state[self._working_mask(), 0] = faulty_processes
+        self._state[self._working_mask(), 0] = faulty_processes
 
         dead_processes = np.random.binomial(
             1,
@@ -347,7 +343,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             * np.sum(self.adjacency_matrix_prob[self._faulty_working_mask()], axis=1),
             size=self.adjacency_matrix_prob[self._faulty_working_mask()].shape[0],
         )
-        self.state[self._faulty_working_mask(), 0] = dead_processes
+        self._state[self._faulty_working_mask(), 0] = dead_processes
 
         self.timestep += 1
         observations = self.get_obs()
@@ -369,7 +365,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             Boolean array where True indicates the machine is working (state code 0).
         """
 
-        return self.state[:, 0] == 0
+        return self._state[:, 0] == 0
 
     def _faulty_working_mask(self):
         """
@@ -384,7 +380,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             Boolean array where True indicates machine is faulty or dead
             (state code != 0).
         """
-        return self.state[:, 0] != 0
+        return self._state[:, 0] != 0
 
     def _working_loaded_mask(self):
         """
@@ -398,7 +394,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         np.ndarray
             Boolean array where True indicates working and loaded machines.
         """
-        return (self.state[:, 0] == 0) & (self.state[:, 1] == 1)
+        return (self._state[:, 0] == 0) & (self._state[:, 1] == 1)
 
     def _faulty_loaded_mask(self):
         """
@@ -412,7 +408,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         np.ndarray
             Boolean array where True indicates faulty and loaded machines.
         """
-        return (self.state[:, 0] == 1) & (self.state[:, 1] == 1)
+        return (self._state[:, 0] == 1) & (self._state[:, 1] == 1)
 
     def _done_mask(self):
         """
@@ -426,7 +422,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         np.ndarray
             Boolean array where True indicates machines done with their tasks.
         """
-        return (self.state[:, 0] != 2) & (self.state[:, 1] == 2)
+        return (self._state[:, 0] != 2) & (self._state[:, 1] == 2)
 
     def _available_mask(self):
         """
@@ -441,7 +437,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         np.ndarray
             Boolean array where True indicates available machines.
         """
-        return (self.state[:, 1] == 0) & (self.state[:, 0] == 0)
+        return (self._state[:, 1] == 0) & (self._state[:, 0] == 0)
 
     def get_obs(self) -> dict:
         """Retrieve the current observation for each agent.
@@ -454,7 +450,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             Mapping from agent IDs to their observations
             (np.ndarray of shape (2,)).
         """
-        observations = {agent: self.state[agent] for agent in range(self.n_agents)}
+        observations = {agent: self._state[agent] for agent in range(self.n_agents)}
         return observations
 
     def render(self):
@@ -467,7 +463,10 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         This method is a placeholder and should be implemented to provide
         a graphical or structured visualization of the environment.
         """
-        print(self.state)
+        print(self._state)
+
+    def state(self):
+        return self._state
 
     @functools.lru_cache(maxsize=None)
     def observation_space(self, agent) -> MultiDiscrete:
