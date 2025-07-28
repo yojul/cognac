@@ -7,7 +7,7 @@
 [![Documentation Status](https://readthedocs.org/projects/cognac-marl/badge/?version=latest)](https://cognac-marl.readthedocs.io/en/latest/)
 
 
-## 📚 Official [Documentation](https://cognac-marl.readthedocs.io/en/latest/) is available here : https://cognac-marl.readthedocs.io/en/latest/ .
+## 📚 [Documentation](https://cognac-marl.readthedocs.io/en/latest/) is available here : https://cognac-marl.readthedocs.io/en/latest/ .
 
 COGNAC is a Python-based benchmark suite offering **flexible**, **graph-structured**, **cooperative multi-agent** environments for MARL research. The package offers standardized minimal implementations of several well-known theoretical **graph-based MARL problems** taken from the literature, adapted for empirical benchmarking with modern RL tooling.
 
