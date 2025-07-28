@@ -84,7 +84,7 @@ class FactoredRewardModel(BaseReward):
         else:
             maj = env.get_majority_value()
             reward = {
-                agent: 1.0 if maj == env.state()[agent] else -1.0
+                agent: 0.0 if maj == env.state()[agent] else -1.0
                 for agent in range(env.n_agents)
             }
         return (
@@ -133,7 +133,7 @@ class RewardWInitTarget(BaseReward):
         Default is -10.0.
     """
 
-    def __init__(self, max_reward: float = 10.0, min_reward: float = -10.0):
+    def __init__(self, max_reward: float = 100.0, min_reward: float = -10.0):
         self.min_reward = min_reward
         self.max_reward = max_reward
         self.target_value = None
