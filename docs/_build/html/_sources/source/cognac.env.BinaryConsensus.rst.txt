@@ -72,6 +72,51 @@ Environment
 Rewards
 -----------------------------------------
 
+The default rewards here is the `FactoredRewardModel`. 
+This reward gives a penalty to each agent at each step for disagreeing with the current majority (which does not necessarily match the objective consensus). 
+At the terminal state, it gives a large reward for reaching the consensus, weighted by the time it took to reach it (the faster, the better).
+If the consensus is not reached and the game reaches the maximum horizon, it gives a large negative reward weighted by the distance to the consensus.
+
+More formally, the reward model works like this:
+
+**During an episode**:  
+Each agent gets a local reward at each step:
+
+.. math::
+
+   r_i(t) =
+   \begin{cases}
+       0 & \text{if agent } i \text{ agrees with majority} \\
+       -1 & \text{otherwise}
+   \end{cases}
+
+**At episode end**:
+
+- Let :math:`\tau` be the temporal weight factor in the reward, it 
+
+.. math::
+
+   \tau = \frac{t_{\max}-t_{\rm final}}{t_{\max}}, \quad
+
+:math:`t_{\max}` is the maximum length of an episode and :math:`t_{\rm final}` is the actual terminal timestep. Thus, this temporal factor goes linearly from 1 to 0 in an episode.
+
+- Let :math:`\xi` be a penalty term that is added whenever the consensus is not reach at the end of an episode.
+
+.. math::
+    \xi =
+        \begin{cases}
+            -100 & \tau = 0 \\
+            0 & \text{otherwise}
+        \end{cases}
+
+Then the final reward is computed using the ratio to the consensus :math:`x_{\rm final}/N`, :math:`x` being the number of agents agreeing with the objective value.
+
+.. math::
+   r_i(\text{end}) = \frac{\tau \,\left(100\,x_{\rm final}/N + \xi \right)}{N}
+
+
+
+
 .. automodule:: cognac.env.BinaryConsensus.rewards
    :members:
    :show-inheritance:
