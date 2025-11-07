@@ -64,6 +64,7 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
         self.adjacency_matrix = adjacency_matrix
         self.n_agents = adjacency_matrix.shape[0]
         self.possible_agents = list(range(self.n_agents))
+        self.agents = None
         self._state = None
         self.timestep = None
         self.max_steps = max_steps
@@ -131,6 +132,18 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
         infos : dict
             Info dictionaries for each agent.
         """
+
+        def sample_binary_vector(n):
+            # Step 1: choose number of zeros uniformly
+            k = np.random.randint(0, n + 1)
+
+            # Step 2: choose positions for zeros
+            vec = np.ones(n, dtype=int)
+            zero_positions = np.random.choice(n, k, replace=False)
+            vec[zero_positions] = 0
+
+            return vec
+
         self.agents = list(range(self.n_agents))
         self.timestep = 0
 
@@ -138,13 +151,14 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
             assert len(options["init_vect"]) == self.n_agents
             self._state = np.array(options["init_vect"], dtype=float)
         else:
-            self._state = np.random.randint(0, 2, size=self.n_agents).astype(float)
+            self._state = sample_binary_vector(self.n_agents).astype(float)
+            # prevent initialization with a consensus
             while np.all(self._state == 0) or np.all(self._state == 1):
-                self._state = np.random.randint(0, 2, size=self.n_agents).astype(float)
+                self._state = sample_binary_vector(self.n_agents).astype(float)
 
         observations = self.get_obs()
         infos = {a: {} for a in self.agents}
-        self.reward.reset(self._state)
+        self.reward.reset(self._state.astype(int))
         return observations, infos
 
     def step(self, actions: Dict[int, int]) -> Tuple[
@@ -197,20 +211,25 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
             self._state[agent] = np.abs(self._state[agent] - act)
 
         terminations = {agent: False for agent in range(self.n_agents)}
-        is_done = np.all(self._state == 0) or np.all(self._state == 1)
+        if self.reward.target is None:
+            is_done = np.all(self._state == 0) or np.all(self._state == 1)
+        else:
+            is_done = np.all(self._state == self.reward.target)
         if is_done:
             terminations = {agent: True for agent in self.possible_agents}
             self.agents = []
 
         truncations = {a: False for a in range(self.n_agents)}
-        if self.timestep >= self.max_steps - 1:
+        is_truncated = self.timestep > self.max_steps - 2
+        if is_truncated:
             truncations = {a: True for a in self.possible_agents}
+            terminations = {a: True for a in self.possible_agents}
             self.agents = []
         rewards = self.reward(
             actions,
             self,
             is_done,
-            self.timestep >= self.max_steps - 1,
+            is_truncated,
             as_global=self.is_global_reward,
         )
         self.timestep += 1

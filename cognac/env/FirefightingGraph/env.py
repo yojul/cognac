@@ -146,7 +146,9 @@ class RowFireFightingGraphEnvironment(ParallelEnv):
             assert len(options["init_vect"]) == self.n_houses
             self.state = np.array(options["init_vect"])
         else:
-            self.state = np.random.randint(0, self.max_fire_level, size=self.n_houses)
+            self.state = np.random.randint(
+                0, self.max_fire_level + 1, size=self.n_houses
+            )
 
         observations = self.get_obs()
         infos = {

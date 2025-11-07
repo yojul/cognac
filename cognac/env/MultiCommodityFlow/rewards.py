@@ -71,7 +71,7 @@ class MCFWithOverflowPenaltyReward(BaseReward):
                 weight = data["weight"]
                 capacity = data.get("capacity", float("inf"))
 
-                cost += (1 / (weight)) * total_flow
+                cost += (1 / (weight) ** 3) * total_flow
 
                 if total_flow > capacity:
                     penalty += total_flow - capacity
