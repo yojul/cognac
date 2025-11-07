@@ -128,6 +128,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         self.adjacency_matrix = adjacency_matrix
         self.n_agents = adjacency_matrix.shape[0]
         self.possible_agents = list(range(self.n_agents))
+        self.agents = None
         self._state = None
         self.timestep = None
         self.max_steps = max_steps
