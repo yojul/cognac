@@ -141,6 +141,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         self.base_success_rate = base_success_rate
         self.faulty_success_rate = faulty_success_rate
         self.dead_rate_multiplier = dead_rate_multiplier
+        self.base_dead_rate = self.dead_rate_multiplier * self.base_fail_rate
 
         # Probability of influencing action in [0,1]
         self.adjacency_matrix_prob = self.adjacency_matrix
@@ -329,48 +330,48 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         working_mask = self._working_mask()
         faulty_mask = self._faulty_working_mask()
 
-        # --- Working → Faulty ---
+        # STEP 4 : Faulty/Dead states propagation
+        # --- Working → Faulty transition ---
         if np.any(working_mask):
-            # For each working machine,
-            # probability healthy = product(1 - p_infection_from_faulty_neighbors)
             if np.any(faulty_mask):
+                # Probability each working node stays healthy
                 healthy_prob = np.prod(
                     1 - self.adjacency_matrix_prob[working_mask][:, faulty_mask],
                     axis=1,
                 )
-                p_infected = (
-                    1 - healthy_prob
-                )  # probability it becomes faulty due to neighbors
+                p_infected_from_neighbors = 1 - healthy_prob
             else:
-                p_infected = np.zeros(working_mask.sum())
+                p_infected_from_neighbors = np.zeros(working_mask.sum())
 
-            # Add intrinsic failure probability (base_fail_rate)
-            p_fault = np.clip(self.base_fail_rate + p_infected, 0.0, 1.0)
+            # Combine base failure rate and network infection independently
+            p_fault = 1 - (1 - self.base_fail_rate) * (1 - p_infected_from_neighbors)
+            p_fault = np.clip(p_fault, 0.0, 1.0)
 
+            # Apply Bernoulli process
             faulty_processes = np.random.binomial(1, p_fault, size=p_fault.shape[0])
             self._state[working_mask, 0] += faulty_processes
 
-        # --- Faulty → Dead ---
+        # --- Faulty → Dead transition ---
         if np.any(faulty_mask):
-            # Independent propagation from other faulty/dead nodes
-            if np.any(faulty_mask):
-                healthy_prob_for_dead = np.prod(
-                    1 - self.adjacency_matrix_prob[faulty_mask][:, faulty_mask],
-                    axis=1,
-                )
-                p_dead_from_neighbors = 1 - healthy_prob_for_dead
-            else:
-                p_dead_from_neighbors = np.zeros(faulty_mask.sum())
-
-            # Combine with multiplier (to make death rarer than fault)
-            p_dead = np.clip(
-                self.dead_rate_multiplier * p_dead_from_neighbors, 0.0, 1.0
+            # Probability faulty node stays alive despite other faulty/dead neighbors
+            healthy_prob_for_dead = np.prod(
+                1 - self.adjacency_matrix_prob[faulty_mask][:, faulty_mask],
+                axis=1,
             )
+            p_dead_from_neighbors = 1 - healthy_prob_for_dead
 
+            # Combine base death rate and propagation independently
+            # (dead_rate_multiplier scales the strength of propagation)
+            p_dead = 1 - (1 - self.base_dead_rate) * (
+                1 - self.dead_rate_multiplier * p_dead_from_neighbors
+            )
+            p_dead = np.clip(p_dead, 0.0, 1.0)
+
+            # Apply Bernoulli process
             dead_processes = np.random.binomial(1, p_dead, size=p_dead.shape[0])
             self._state[faulty_mask, 0] += dead_processes
 
-        # Ensure states remain in {0=working, 1=faulty, 2=dead}
+        # --- Clip states to allowed range {0=working, 1=faulty, 2=dead} ---
         self._state[:, 0] = np.clip(self._state[:, 0], 0, 2)
 
         self.timestep += 1
