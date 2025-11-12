@@ -115,7 +115,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         self,
         adjacency_matrix: np.ndarray,
         max_steps: int = 100,
-        show_neighborhood_state: bool = True,
+        show_neighborhood_state: bool = False,
         reward_class: BaseReward = SysAdminDefaultReward,
         is_global_reward: bool = False,
         base_arrival_rate: float = 0.5,
@@ -326,25 +326,52 @@ class SysAdminNetworkEnvironment(ParallelEnv):
                 size=self._state[self._available_mask(), 1].shape,
             )
 
-        # STEP 4 : Randomly make machines faulty or dead with networked influence
-        faulty_processes = np.random.binomial(
-            1,
-            np.clip(
-                np.sum(self.adjacency_matrix_prob[self._working_mask()], axis=1),
-                min=0.0,
-                max=1.0,
-            ),
-            size=self.adjacency_matrix_prob[self._working_mask()].shape[0],
-        )
-        self._state[self._working_mask(), 0] = faulty_processes
+        working_mask = self._working_mask()
+        faulty_mask = self._faulty_working_mask()
 
-        dead_processes = np.random.binomial(
-            1,
-            self.dead_rate_multiplier
-            * np.sum(self.adjacency_matrix_prob[self._faulty_working_mask()], axis=1),
-            size=self.adjacency_matrix_prob[self._faulty_working_mask()].shape[0],
-        )
-        self._state[self._faulty_working_mask(), 0] = dead_processes
+        # --- Working → Faulty ---
+        if np.any(working_mask):
+            # For each working machine,
+            # probability healthy = product(1 - p_infection_from_faulty_neighbors)
+            if np.any(faulty_mask):
+                healthy_prob = np.prod(
+                    1 - self.adjacency_matrix_prob[working_mask][:, faulty_mask],
+                    axis=1,
+                )
+                p_infected = (
+                    1 - healthy_prob
+                )  # probability it becomes faulty due to neighbors
+            else:
+                p_infected = np.zeros(working_mask.sum())
+
+            # Add intrinsic failure probability (base_fail_rate)
+            p_fault = np.clip(self.base_fail_rate + p_infected, 0.0, 1.0)
+
+            faulty_processes = np.random.binomial(1, p_fault, size=p_fault.shape[0])
+            self._state[working_mask, 0] += faulty_processes
+
+        # --- Faulty → Dead ---
+        if np.any(faulty_mask):
+            # Independent propagation from other faulty/dead nodes
+            if np.any(faulty_mask):
+                healthy_prob_for_dead = np.prod(
+                    1 - self.adjacency_matrix_prob[faulty_mask][:, faulty_mask],
+                    axis=1,
+                )
+                p_dead_from_neighbors = 1 - healthy_prob_for_dead
+            else:
+                p_dead_from_neighbors = np.zeros(faulty_mask.sum())
+
+            # Combine with multiplier (to make death rarer than fault)
+            p_dead = np.clip(
+                self.dead_rate_multiplier * p_dead_from_neighbors, 0.0, 1.0
+            )
+
+            dead_processes = np.random.binomial(1, p_dead, size=p_dead.shape[0])
+            self._state[faulty_mask, 0] += dead_processes
+
+        # Ensure states remain in {0=working, 1=faulty, 2=dead}
+        self._state[:, 0] = np.clip(self._state[:, 0], 0, 2)
 
         self.timestep += 1
         observations = self.get_obs()
@@ -451,7 +478,10 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             Mapping from agent IDs to their observations
             (np.ndarray of shape (2,)).
         """
-        observations = {agent: self._state[agent] for agent in range(self.n_agents)}
+        observations = {
+            agent: self._state[self.neighboring_masks[agent]]
+            for agent in range(self.n_agents)
+        }
         return observations
 
     def render(self):
