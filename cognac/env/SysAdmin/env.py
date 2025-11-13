@@ -118,11 +118,11 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         show_neighborhood_state: bool = False,
         reward_class: BaseReward = SysAdminDefaultReward,
         is_global_reward: bool = False,
-        base_arrival_rate: float = 0.5,
-        base_fail_rate: float = 0.1,
-        dead_rate_multiplier: float = 0.2,
+        base_arrival_rate: float = 0.2,
+        base_fail_rate: float = 0.15,
+        dead_rate_multiplier: float = 0.05,
         base_success_rate: float = 0.3,
-        faulty_success_rate: float = 0.1,
+        faulty_success_rate: float = 0.2,
     ):
         # Env properties
         self.adjacency_matrix = adjacency_matrix.copy()
