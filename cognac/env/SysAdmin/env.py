@@ -125,7 +125,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         faulty_success_rate: float = 0.1,
     ):
         # Env properties
-        self.adjacency_matrix = adjacency_matrix
+        self.adjacency_matrix = adjacency_matrix.copy()
         self.n_agents = adjacency_matrix.shape[0]
         self.possible_agents = list(range(self.n_agents))
         self.agents = None
@@ -144,7 +144,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         self.base_dead_rate = self.dead_rate_multiplier * self.base_fail_rate
 
         # Probability of influencing action in [0,1]
-        self.adjacency_matrix_prob = self.adjacency_matrix
+        self.adjacency_matrix_prob = self.adjacency_matrix.copy()
         self._check_adjacency_matrix()
         # Add self influence w/ base fail rate paramater
         np.fill_diagonal(self.adjacency_matrix_prob, self.base_fail_rate)
@@ -177,6 +177,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             If any of the validation checks fail.
         """
         # Check that the diagonal is zero
+        print(self.adjacency_matrix_prob)
         assert all(
             [self.adjacency_matrix_prob[i, i] == 0 for i in range(self.n_agents)]
         )
