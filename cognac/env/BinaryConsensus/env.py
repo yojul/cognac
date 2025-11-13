@@ -61,7 +61,7 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
             If True, use a shared global reward. If False, compute rewards per agent.
         """
 
-        self.adjacency_matrix = adjacency_matrix
+        self.adjacency_matrix = adjacency_matrix.copy()
         self.n_agents = adjacency_matrix.shape[0]
         self.possible_agents = list(range(self.n_agents))
         self.agents = None

@@ -76,12 +76,12 @@ _Here is an example of randomly generated adjacency matrix:_
 
 If you used this environment for your experiments or found it helpful, consider citing it:
 <pre>
-@article{sintes2025cognac,
-  title={COGNAC - Cooperative Graph-based Networked Agent Challenges for Multi-Agent Reinforcement Learning},
-  author={Sintes, Jules}, 
+@inproceeding{sintes2025cognac,
+  title={COGNAC: Cooperative Graph-based Networked Agent Challenges for Multi-Agent Reinforcement Learning},
+  author={Sintes, Jules and Busic, Ana},
   url={\url{https://github.com/yojul/cognac}},
-  publisher={Github},
-  year={2025},
+  journal={Advances in Neural Information Processing Systems},
+  year={2025}
 }
 </pre>
 
