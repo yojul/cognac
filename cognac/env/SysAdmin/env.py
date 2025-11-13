@@ -177,7 +177,6 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             If any of the validation checks fail.
         """
         # Check that the diagonal is zero
-        print(self.adjacency_matrix_prob)
         assert all(
             [self.adjacency_matrix_prob[i, i] == 0 for i in range(self.n_agents)]
         )
