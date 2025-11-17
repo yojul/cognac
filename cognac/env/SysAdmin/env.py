@@ -115,17 +115,17 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         self,
         adjacency_matrix: np.ndarray,
         max_steps: int = 100,
-        show_neighborhood_state: bool = True,
+        show_neighborhood_state: bool = False,
         reward_class: BaseReward = SysAdminDefaultReward,
         is_global_reward: bool = False,
-        base_arrival_rate: float = 0.5,
-        base_fail_rate: float = 0.1,
-        dead_rate_multiplier: float = 0.2,
+        base_arrival_rate: float = 0.2,
+        base_fail_rate: float = 0.15,
+        dead_rate_multiplier: float = 0.05,
         base_success_rate: float = 0.3,
-        faulty_success_rate: float = 0.1,
+        faulty_success_rate: float = 0.2,
     ):
         # Env properties
-        self.adjacency_matrix = adjacency_matrix
+        self.adjacency_matrix = adjacency_matrix.copy()
         self.n_agents = adjacency_matrix.shape[0]
         self.possible_agents = list(range(self.n_agents))
         self.agents = None
@@ -141,9 +141,10 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         self.base_success_rate = base_success_rate
         self.faulty_success_rate = faulty_success_rate
         self.dead_rate_multiplier = dead_rate_multiplier
+        self.base_dead_rate = self.dead_rate_multiplier * self.base_fail_rate
 
         # Probability of influencing action in [0,1]
-        self.adjacency_matrix_prob = self.adjacency_matrix
+        self.adjacency_matrix_prob = self.adjacency_matrix.copy()
         self._check_adjacency_matrix()
         # Add self influence w/ base fail rate paramater
         np.fill_diagonal(self.adjacency_matrix_prob, self.base_fail_rate)
@@ -326,25 +327,52 @@ class SysAdminNetworkEnvironment(ParallelEnv):
                 size=self._state[self._available_mask(), 1].shape,
             )
 
-        # STEP 4 : Randomly make machines faulty or dead with networked influence
-        faulty_processes = np.random.binomial(
-            1,
-            np.clip(
-                np.sum(self.adjacency_matrix_prob[self._working_mask()], axis=1),
-                min=0.0,
-                max=1.0,
-            ),
-            size=self.adjacency_matrix_prob[self._working_mask()].shape[0],
-        )
-        self._state[self._working_mask(), 0] = faulty_processes
+        working_mask = self._working_mask()
+        faulty_mask = self._faulty_working_mask()
 
-        dead_processes = np.random.binomial(
-            1,
-            self.dead_rate_multiplier
-            * np.sum(self.adjacency_matrix_prob[self._faulty_working_mask()], axis=1),
-            size=self.adjacency_matrix_prob[self._faulty_working_mask()].shape[0],
-        )
-        self._state[self._faulty_working_mask(), 0] = dead_processes
+        # STEP 4 : Faulty/Dead states propagation
+        # --- Working → Faulty transition ---
+        if np.any(working_mask):
+            if np.any(faulty_mask):
+                # Probability each working node stays healthy
+                healthy_prob = np.prod(
+                    1 - self.adjacency_matrix_prob[working_mask][:, faulty_mask],
+                    axis=1,
+                )
+                p_infected_from_neighbors = 1 - healthy_prob
+            else:
+                p_infected_from_neighbors = np.zeros(working_mask.sum())
+
+            # Combine base failure rate and network infection independently
+            p_fault = 1 - (1 - self.base_fail_rate) * (1 - p_infected_from_neighbors)
+            p_fault = np.clip(p_fault, 0.0, 1.0)
+
+            # Apply Bernoulli process
+            faulty_processes = np.random.binomial(1, p_fault, size=p_fault.shape[0])
+            self._state[working_mask, 0] += faulty_processes
+
+        # --- Faulty → Dead transition ---
+        if np.any(faulty_mask):
+            # Probability faulty node stays alive despite other faulty/dead neighbors
+            healthy_prob_for_dead = np.prod(
+                1 - self.adjacency_matrix_prob[faulty_mask][:, faulty_mask],
+                axis=1,
+            )
+            p_dead_from_neighbors = 1 - healthy_prob_for_dead
+
+            # Combine base death rate and propagation independently
+            # (dead_rate_multiplier scales the strength of propagation)
+            p_dead = 1 - (1 - self.base_dead_rate) * (
+                1 - self.dead_rate_multiplier * p_dead_from_neighbors
+            )
+            p_dead = np.clip(p_dead, 0.0, 1.0)
+
+            # Apply Bernoulli process
+            dead_processes = np.random.binomial(1, p_dead, size=p_dead.shape[0])
+            self._state[faulty_mask, 0] += dead_processes
+
+        # --- Clip states to allowed range {0=working, 1=faulty, 2=dead} ---
+        self._state[:, 0] = np.clip(self._state[:, 0], 0, 2)
 
         self.timestep += 1
         observations = self.get_obs()
@@ -451,7 +479,10 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             Mapping from agent IDs to their observations
             (np.ndarray of shape (2,)).
         """
-        observations = {agent: self._state[agent] for agent in range(self.n_agents)}
+        observations = {
+            agent: self._state[self.neighboring_masks[agent]]
+            for agent in range(self.n_agents)
+        }
         return observations
 
     def render(self):
