@@ -42,7 +42,7 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
         max_steps: int = 100,
         show_neighborhood_state: bool = True,
         reward_class: type[BaseReward] = FactoredRewardModel,
-        is_global_reward: bool = False,
+        is_shared_reward: bool = False,
     ):
         """Initialize the consensus environment.
 
@@ -57,7 +57,7 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
             Whether each agent observes its neighborhood. Default is True.
         reward_class : type, optional
             Class used for computing rewards. Must implement the reward model interface.
-        is_global_reward : bool, optional
+        is_shared_reward : bool, optional
             If True, use a shared global reward. If False, compute rewards per agent.
         """
 
@@ -69,7 +69,7 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
         self.timestep = None
         self.max_steps = max_steps
         self.reward = reward_class()
-        self.is_global_reward = is_global_reward
+        self.is_shared_reward = is_shared_reward
         self.influence_activation = np.zeros((self.n_agents, self.n_agents), dtype=bool)
 
         self.influence_sgn = np.sign(self.adjacency_matrix)
@@ -230,7 +230,7 @@ class BinaryConsensusNetworkEnvironment(ParallelEnv):
             self,
             is_done,
             is_truncated,
-            as_global=self.is_global_reward,
+            as_global=self.is_shared_reward,
         )
         self.timestep += 1
         observations = self.get_obs()

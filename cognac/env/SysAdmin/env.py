@@ -48,7 +48,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         neighbors' states.
     reward_class : BaseReward subclass, default=SysAdminDefaultReward
         Class to compute the rewards. Should be derived from BaseReward.
-    is_global_reward : bool, default=False
+    is_shared_reward : bool, default=False
         If True, a single global reward is returned to all agents.
     base_arrival_rate : float, default=0.5
         Probability of new job arriving for an available machine at each step.
@@ -82,7 +82,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         Maximum allowed timesteps before termination.
     reward : BaseReward
         Instance of the reward class used to calculate rewards.
-    is_global_reward : bool
+    is_shared_reward : bool
         Flag indicating if rewards are global or individual.
     neighboring_masks : np.ndarray (bool)
         Boolean mask matrix indicating which agents observe each other.
@@ -117,7 +117,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         max_steps: int = 100,
         show_neighborhood_state: bool = False,
         reward_class: BaseReward = SysAdminDefaultReward,
-        is_global_reward: bool = False,
+        is_shared_reward: bool = False,
         base_arrival_rate: float = 0.2,
         base_fail_rate: float = 0.15,
         dead_rate_multiplier: float = 0.05,
@@ -133,7 +133,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         self.timestep = None
         self.max_steps = max_steps
         self.reward = reward_class()
-        self.is_global_reward = is_global_reward
+        self.is_shared_reward = is_shared_reward
 
         # Base parameters
         self.base_arrival_rate = base_arrival_rate
@@ -314,7 +314,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
 
         # Compute rewards
         rewards = self.reward(
-            actions, self, is_done, is_truncated, as_global=self.is_global_reward
+            actions, self, is_done, is_truncated, as_global=self.is_shared_reward
         )
         # Reset states
         self._state[self._done_mask(), 1] = 0
