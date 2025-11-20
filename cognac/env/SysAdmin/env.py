@@ -57,10 +57,15 @@ class SysAdminNetworkEnvironment(ParallelEnv):
     dead_rate_multiplier : float, default=0.2
         Multiplier for probability of machine becoming dead influenced
         by faulty neighbors.
-    base_success_rate : float, default=0.3
-        Probability that a working loaded machine completes its task successfully.
-    faulty_success_rate : float, default=0.1
-        Probability that a faulty loaded machine completes its task successfully.
+    avg_completion_time_good: int, default= 4
+        Average number of timestep required to complete a task when state is "good".
+        The associated beta distribution is computed based on this parameter.
+    avg_completion_time_faulty: int, default=8
+        Average number of timestep required to complete a task when state is "faulty".
+        The associated beta distribution is computed based on this parameter.
+    beta_distrib_concentration: float default=10.0
+        Concentration parameter of the beta distribution. Lower concentration
+        value means higher variance on the number of steps needed to complete a task.
 
     Attributes
     ----------
@@ -121,11 +126,9 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         base_arrival_rate: float = 0.2,
         base_fail_rate: float = 0.15,
         dead_rate_multiplier: float = 0.05,
-        base_success_rate: float = 0.3,
-        faulty_success_rate: float = 0.2,
-        avg_completion_time_good: int = 5,
-        avg_completion_time_faulty: int = 10,
-        beta_distrib_concentration: float = 5.0,
+        avg_completion_time_good: int = 4,
+        avg_completion_time_faulty: int = 8,
+        beta_distrib_concentration: float = 10.0,
     ):
         # Env properties
         self.adjacency_matrix = adjacency_matrix.copy()
@@ -141,8 +144,6 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         # Base parameters
         self.base_arrival_rate = base_arrival_rate
         self.base_fail_rate = base_fail_rate
-        self.base_success_rate = base_success_rate
-        self.faulty_success_rate = faulty_success_rate
         self.alpha_good, self.beta_good = self._compute_beta_distrib_param(
             avg_completion_time_good, k=beta_distrib_concentration
         )
@@ -567,7 +568,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         gymnasium.spaces.MultiDiscrete
             Observation space for the agent.
         """
-        return MultiDiscrete([3, 3])
+        return MultiDiscrete([[3, 3]] * np.count_nonzero(self.neighboring_masks[agent]))
 
     @functools.lru_cache(maxsize=None)
     def action_space(self, agent) -> Discrete:
