@@ -123,7 +123,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         show_neighborhood_state: bool = False,
         reward_class: BaseReward = SysAdminDefaultReward,
         is_shared_reward: bool = False,
-        base_arrival_rate: float = 0.2,
+        base_arrival_rate: float = 0.4,
         base_fail_rate: float = 0.15,
         dead_rate_multiplier: float = 0.05,
         avg_completion_time_good: int = 4,
