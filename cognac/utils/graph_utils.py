@@ -232,4 +232,4 @@ def to_stochastic_matrix(prob_matrix: np.ndarray) -> np.ndarray:
 
     stochastic_matrix = prob_matrix / row_sums
 
-    return stochastic_matrix
+    return np.clip(stochastic_matrix, min=0.0, max=1.0)

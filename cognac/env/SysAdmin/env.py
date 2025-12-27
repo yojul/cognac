@@ -162,9 +162,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         self._scale_adjacency_matrix()
 
         self.neighboring_masks = np.identity(self.n_agents, dtype=bool)
-        self.adjacency_matrix_prob = (
-            to_stochastic_matrix(self.adjacency_matrix_prob) - 1e-4
-        )
+        self.adjacency_matrix_prob = to_stochastic_matrix(self.adjacency_matrix_prob)
         if (
             show_neighborhood_state
         ):  # Fill the neighboring mask to enable visibility of neighbors' states
