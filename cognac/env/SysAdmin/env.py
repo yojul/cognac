@@ -48,7 +48,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         neighbors' states.
     reward_class : BaseReward subclass, default=SysAdminDefaultReward
         Class to compute the rewards. Should be derived from BaseReward.
-    is_global_reward : bool, default=False
+    is_shared_reward : bool, default=False
         If True, a single global reward is returned to all agents.
     base_arrival_rate : float, default=0.5
         Probability of new job arriving for an available machine at each step.
@@ -57,10 +57,15 @@ class SysAdminNetworkEnvironment(ParallelEnv):
     dead_rate_multiplier : float, default=0.2
         Multiplier for probability of machine becoming dead influenced
         by faulty neighbors.
-    base_success_rate : float, default=0.3
-        Probability that a working loaded machine completes its task successfully.
-    faulty_success_rate : float, default=0.1
-        Probability that a faulty loaded machine completes its task successfully.
+    avg_completion_time_good: int, default= 4
+        Average number of timestep required to complete a task when state is "good".
+        The associated beta distribution is computed based on this parameter.
+    avg_completion_time_faulty: int, default=8
+        Average number of timestep required to complete a task when state is "faulty".
+        The associated beta distribution is computed based on this parameter.
+    beta_distrib_concentration: float default=10.0
+        Concentration parameter of the beta distribution. Lower concentration
+        value means higher variance on the number of steps needed to complete a task.
 
     Attributes
     ----------
@@ -82,7 +87,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         Maximum allowed timesteps before termination.
     reward : BaseReward
         Instance of the reward class used to calculate rewards.
-    is_global_reward : bool
+    is_shared_reward : bool
         Flag indicating if rewards are global or individual.
     neighboring_masks : np.ndarray (bool)
         Boolean mask matrix indicating which agents observe each other.
@@ -117,12 +122,13 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         max_steps: int = 100,
         show_neighborhood_state: bool = False,
         reward_class: BaseReward = SysAdminDefaultReward,
-        is_global_reward: bool = False,
-        base_arrival_rate: float = 0.2,
+        is_shared_reward: bool = False,
+        base_arrival_rate: float = 0.4,
         base_fail_rate: float = 0.15,
         dead_rate_multiplier: float = 0.05,
-        base_success_rate: float = 0.3,
-        faulty_success_rate: float = 0.2,
+        avg_completion_time_good: int = 4,
+        avg_completion_time_faulty: int = 8,
+        beta_distrib_concentration: float = 10.0,
     ):
         # Env properties
         self.adjacency_matrix = adjacency_matrix.copy()
@@ -133,16 +139,21 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         self.timestep = None
         self.max_steps = max_steps
         self.reward = reward_class()
-        self.is_global_reward = is_global_reward
+        self.is_shared_reward = is_shared_reward
 
         # Base parameters
         self.base_arrival_rate = base_arrival_rate
         self.base_fail_rate = base_fail_rate
-        self.base_success_rate = base_success_rate
-        self.faulty_success_rate = faulty_success_rate
+        self.alpha_good, self.beta_good = self._compute_beta_distrib_param(
+            avg_completion_time_good, k=beta_distrib_concentration
+        )
+        self.alpha_faulty, self.beta_faulty = self._compute_beta_distrib_param(
+            avg_completion_time_faulty, k=beta_distrib_concentration
+        )
         self.dead_rate_multiplier = dead_rate_multiplier
         self.base_dead_rate = self.dead_rate_multiplier * self.base_fail_rate
 
+        self.rng = None
         # Probability of influencing action in [0,1]
         self.adjacency_matrix_prob = self.adjacency_matrix.copy()
         self._check_adjacency_matrix()
@@ -151,9 +162,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         self._scale_adjacency_matrix()
 
         self.neighboring_masks = np.identity(self.n_agents, dtype=bool)
-        self.adjacency_matrix_prob = (
-            to_stochastic_matrix(self.adjacency_matrix_prob) - 1e-4
-        )
+        self.adjacency_matrix_prob = to_stochastic_matrix(self.adjacency_matrix_prob)
         if (
             show_neighborhood_state
         ):  # Fill the neighboring mask to enable visibility of neighbors' states
@@ -161,6 +170,8 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             self.neighboring_masks = self.neighboring_masks + (
                 self.filled_influence != 0
             )
+
+        self.task_progress_vect = None
 
     def _check_adjacency_matrix(self):
         """
@@ -210,6 +221,24 @@ class SysAdminNetworkEnvironment(ParallelEnv):
                 self.adjacency_matrix_prob / max_col_sum
             )  # scale everything so max row sum is 1.0
 
+    def _compute_beta_distrib_param(self, tau, k=50.0):
+        """
+        .. warning::
+            Internal use.
+
+        tau: characteristic completion time in timesteps (tau >= 1)
+        k: concentration (alpha + beta) > 0
+        Returns: alpha, beta, mean m
+        """
+        if tau < 1.0:
+            raise ValueError("tau must be >= 1 for direct-increment Beta on [0,1].")
+        m = 1.0 / float(tau)  # mean increment per timestep
+        # protect against rounding errors for m very close to 0 or 1
+        m = min(max(m, 1e-12), 1.0 - 1e-12)
+        alpha = m * k
+        beta = (1.0 - m) * k
+        return alpha, beta
+
     def reset(self, seed=None, options=None):
         """Reset the environment to its initial state.
 
@@ -228,14 +257,15 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             Dictionary mapping agent IDs to info dictionaries
             (empty in this implementation).
         """
+        self.rng = np.random.default_rng(seed=seed)
         self.agents = list(range(self.n_agents))
         self.timestep = 0
         self._state = np.zeros((self.n_agents, 2))
 
-        initial_jobs = np.random.binomial(1, self.base_arrival_rate, size=self.n_agents)
+        initial_jobs = self.rng.binomial(1, self.base_arrival_rate, size=self.n_agents)
 
         self._state[:, 1] = initial_jobs
-
+        self.task_progress_vect = np.zeros(self.n_agents)
         # Initialize observations for every agent using the initial state vector
         observations = self.get_obs()
 
@@ -279,20 +309,11 @@ class SysAdminNetworkEnvironment(ParallelEnv):
 
         # STEP 0 : Launch reboot of machines as requested
         act_vect = np.array([act for act in actions.values()]).reshape((self.n_agents,))
+        self.task_progress_vect[act_vect == 1] = 0.0
         self._state[act_vect == 1, 0] = 0  # Set machines to reboot to working state
         self._state[act_vect == 1, 1] = 0
 
-        # STEP 1 : Solve current task
-        if np.any(self._working_loaded_mask()):
-            self._state[self._working_loaded_mask(), 1] += np.random.binomial(
-                1, p=self.base_success_rate, size=self._working_loaded_mask().sum()
-            )
-        if np.any(self._faulty_loaded_mask()):
-            self._state[self._faulty_loaded_mask(), 1] += np.random.binomial(
-                1, p=self.faulty_success_rate, size=self._faulty_loaded_mask().sum()
-            )
-
-        # STEP 2 : Compute rewards & reset machines where tasks are done
+        # STEP 1 : Compute rewards & reset machines where tasks are done
         # Terminations
         terminations = {agent: False for agent in range(self.n_agents)}
         is_done = False
@@ -314,18 +335,43 @@ class SysAdminNetworkEnvironment(ParallelEnv):
 
         # Compute rewards
         rewards = self.reward(
-            actions, self, is_done, is_truncated, as_global=self.is_global_reward
+            actions, self, is_done, is_truncated, as_global=self.is_shared_reward
         )
         # Reset states
+        self.task_progress_vect[self._done_mask()] = 0.0
         self._state[self._done_mask(), 1] = 0
+
+        # STEP 2 : Solve current task
+        if np.any(self._working_loaded_mask()):
+            self.task_progress_vect[self._working_loaded_mask()] += self.rng.beta(
+                self.alpha_good, self.beta_good
+            )
+            self._state[self._working_loaded_mask(), 1] += (
+                self.task_progress_vect[self._working_loaded_mask()] >= 1.0
+            ).astype(int)
+
+        if np.any(self._faulty_loaded_mask()):
+            self.task_progress_vect[self._faulty_loaded_mask()] += self.rng.beta(
+                self.alpha_faulty, self.beta_faulty
+            )
+            self._state[self._faulty_loaded_mask(), 1] += (
+                self.task_progress_vect[self._faulty_loaded_mask()] >= 1.0
+            ).astype(int)
+
+        self.task_progress_vect = np.clip(self.task_progress_vect, min=0.0, max=1.0)
 
         # STEP 3 : Draw new jobs for available machines
         if np.any(self._available_mask()):
-            self._state[self._available_mask(), 1] += np.random.binomial(
+            new_jobs = self.rng.binomial(
                 1,
                 self.base_arrival_rate,
                 size=self._state[self._available_mask(), 1].shape,
             )
+
+            # Reset task progress
+            self.task_progress_vect[self._available_mask()][new_jobs.astype(bool)] = 0.0
+            # Increment discrete state
+            self._state[self._available_mask(), 1] += new_jobs
 
         working_mask = self._working_mask()
         faulty_mask = self._faulty_working_mask()
@@ -348,7 +394,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             p_fault = np.clip(p_fault, 0.0, 1.0)
 
             # Apply Bernoulli process
-            faulty_processes = np.random.binomial(1, p_fault, size=p_fault.shape[0])
+            faulty_processes = self.rng.binomial(1, p_fault, size=p_fault.shape[0])
             self._state[working_mask, 0] += faulty_processes
 
         # --- Faulty → Dead transition ---
@@ -368,7 +414,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
             p_dead = np.clip(p_dead, 0.0, 1.0)
 
             # Apply Bernoulli process
-            dead_processes = np.random.binomial(1, p_dead, size=p_dead.shape[0])
+            dead_processes = self.rng.binomial(1, p_dead, size=p_dead.shape[0])
             self._state[faulty_mask, 0] += dead_processes
 
         # --- Clip states to allowed range {0=working, 1=faulty, 2=dead} ---
@@ -520,7 +566,7 @@ class SysAdminNetworkEnvironment(ParallelEnv):
         gymnasium.spaces.MultiDiscrete
             Observation space for the agent.
         """
-        return MultiDiscrete([3, 3])
+        return MultiDiscrete([[3, 3]] * np.count_nonzero(self.neighboring_masks[agent]))
 
     @functools.lru_cache(maxsize=None)
     def action_space(self, agent) -> Discrete:

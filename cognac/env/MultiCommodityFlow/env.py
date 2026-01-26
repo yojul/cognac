@@ -46,7 +46,7 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         Maximum number of steps per episode before termination (default is 20).
     reward_class : type, optional
         Class used to compute the reward at each step (default is DefaultMCFReward).
-    is_global_reward : bool, optional
+    is_shared_reward : bool, optional
         Whether to use a global reward shared across all agents
         or individual rewards (default False).
 
@@ -98,7 +98,7 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         max_capacity: int = 100,
         max_steps: int = 20,
         reward_class: type = MCFWithOverflowPenaltyReward,
-        is_global_reward: bool = False,
+        is_shared_reward: bool = False,
     ):
 
         self.adjacency_matrix = adjacency_matrix
@@ -110,7 +110,7 @@ class MultiCommodityFlowEnvironment(ParallelEnv):
         self.timestep = None
         self.max_steps = max_steps
         self.reward = reward_class()
-        self.is_global_reward = is_global_reward
+        self.is_shared_reward = is_shared_reward
         self.influence_activation = np.zeros((self.n_agents, self.n_agents), dtype=bool)
 
         self.influence_sgn = np.sign(self.adjacency_matrix)

@@ -31,4 +31,8 @@ class SysAdminDefaultReward(BaseReward):
     ):
         done_mask = env._done_mask()
         rewards = {agent: int(done_mask[agent]) for agent in env.possible_agents}
-        return rewards if not as_global else self._get_global_reward(rewards)
+        if as_global:
+            return {
+                agent: self._get_global_reward(rewards) for agent in env.possible_agents
+            }
+        return rewards

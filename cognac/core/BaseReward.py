@@ -59,7 +59,16 @@ class BaseReward(ABC):
         return {agent: self.min_reward for agent in env.possible_agents}
 
     def _get_global_reward(self, local_rewards: dict[float]) -> float:
+        """This method generate a shared reward value as the sum of individual local
+        rewards. This method can be overwrite when creating a reward class for a
+        specific env to get a particular behavior. E.g. average per agent reward or more
+        complex aggregation for shared reward.
 
+        :param local_rewards: The dict of individual local rewards per-agent.
+        :type local_rewards: dict[float]
+        :return: An aggregate shared reward as the sum of local rewards.
+        :rtype: float
+        """
         return sum(local_rewards.values())
 
     def reset(self, init_state):

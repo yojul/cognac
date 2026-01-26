@@ -51,7 +51,7 @@ class RowFireFightingGraphEnvironment(ParallelEnv):
         Maximum fire level a house can reach.
     reward_class : type, optional
         Reward function class to compute rewards.
-    is_global_reward : bool, optional
+    is_shared_reward : bool, optional
         Whether to use a shared global reward or individual rewards.
 
     Attributes
@@ -66,7 +66,7 @@ class RowFireFightingGraphEnvironment(ParallelEnv):
         Maximum fire level a house can reach.
     reward : DefaultFFGReward
         Reward function instance.
-    is_global_reward : bool
+    is_shared_reward : bool
         Whether to use a shared global reward.
     """
 
@@ -78,7 +78,7 @@ class RowFireFightingGraphEnvironment(ParallelEnv):
         max_steps: int = 100,
         max_fire_level: int = 100,
         reward_class: type = DefaultFFGReward,
-        is_global_reward: bool = False,
+        is_shared_reward: bool = False,
     ):
 
         self.n_agents = n
@@ -89,7 +89,7 @@ class RowFireFightingGraphEnvironment(ParallelEnv):
         self.max_steps = max_steps
         self.max_fire_level = max_fire_level
         self.reward = reward_class()
-        self.is_global_reward = is_global_reward
+        self.is_shared_reward = is_shared_reward
         self.rng = None
 
         # Fire level increase probabilities (for burning houses)
@@ -234,7 +234,7 @@ class RowFireFightingGraphEnvironment(ParallelEnv):
             self,
             is_done,
             self.timestep > self.max_steps,
-            as_global=self.is_global_reward,
+            as_global=self.is_shared_reward,
         )
         self.timestep += 1
         observations = self.get_obs()
@@ -378,7 +378,7 @@ class GridFireFightingGraphEnvironment(ParallelEnv):
         Maximum fire level a house can reach.
     reward_class : type, optional
         Reward function class to compute rewards.
-    is_global_reward : bool, optional
+    is_shared_reward : bool, optional
         Whether to use a shared global reward or individual rewards.
 
     Attributes
@@ -397,7 +397,7 @@ class GridFireFightingGraphEnvironment(ParallelEnv):
         Maximum fire level a house can reach.
     reward : DefaultFFGReward
         Reward function instance.
-    is_global_reward : bool
+    is_shared_reward : bool
         Whether to use a shared global reward.
     """
 
@@ -410,7 +410,7 @@ class GridFireFightingGraphEnvironment(ParallelEnv):
         max_steps: int = 100,
         max_fire_level: int = 100,
         reward_class: type = DefaultFFGReward,
-        is_global_reward: bool = False,
+        is_shared_reward: bool = False,
     ):
 
         self.n_width, self.n_heigth = n_width, n_height
@@ -422,7 +422,7 @@ class GridFireFightingGraphEnvironment(ParallelEnv):
         self.max_steps = max_steps
         self.max_fire_level = max_fire_level
         self.reward = reward_class()
-        self.is_global_reward = is_global_reward
+        self.is_shared_reward = is_shared_reward
         self.rng = None
 
         # Fire level increase probabilities (for burning houses)
@@ -588,7 +588,7 @@ class GridFireFightingGraphEnvironment(ParallelEnv):
             self,
             is_done,
             self.timestep > self.max_steps,
-            as_global=self.is_global_reward,
+            as_global=self.is_shared_reward,
         )
         self.timestep += 1
         observations = self.get_obs()
